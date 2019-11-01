@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "scalapb/scalapb.proto";
+
+option (scalapb.options) = {
+  scope: FILE
+  package_name: "factdb.protocol"
+  flat_package: true
+};
+
+message Ack {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+}
+
+message Nack {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+}
+
+message HelloWorld {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    string msg = 1;
+}

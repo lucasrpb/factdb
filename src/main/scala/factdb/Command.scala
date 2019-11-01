@@ -1,0 +1,3 @@
+package factdb
+
+trait Command
