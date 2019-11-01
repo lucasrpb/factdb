@@ -26,7 +26,8 @@ object Client {
 
     implicit val timeout = new Timeout(5 seconds)
 
-    val f = (client ? ClusterClient.Send("/user/hello", HelloWorld("Lucas"), localAffinity = false)).map { case response =>
+    val f = (client ? ClusterClient.Send("/user/c1/singleton", HelloWorld("Lucas"), localAffinity = false))
+      .mapTo[HelloWorld].map { response =>
       println(s"${Console.GREEN_B}response ${response}${Console.RESET}\n")
     }.recover { case ex =>
       ex.printStackTrace()

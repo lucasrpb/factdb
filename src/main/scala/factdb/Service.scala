@@ -7,11 +7,9 @@ import akka.cluster.client.ClusterClientReceptionist
 import akka.cluster.pubsub.DistributedPubSub
 import factdb.protocol._
 
-class Node extends Actor with ActorLogging {
+class Service(val id: String) extends Actor with ActorLogging {
 
   val cluster = Cluster(context.system)
-  //val log = context.system.log
-
   ClusterClientReceptionist(context.system).registerService(self)
 
   // subscribe to cluster changes, re-subscribe when restart

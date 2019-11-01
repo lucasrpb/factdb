@@ -1,23 +1,46 @@
 package factdb
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.{ActorSystem, PoisonPill, Props}
+import akka.cluster.singleton.{ClusterSingletonManager, ClusterSingletonManagerSettings}
 import com.typesafe.config.ConfigFactory
 
 object Server {
 
   def main(args: Array[String]): Unit = {
 
-    val port = args(0)
+    //val port = args(0)
 
-    val config = ConfigFactory.parseString(s"""
+    def startup(ports: Seq[String]): Unit = {
+      ports foreach { port =>
+
+        val config = ConfigFactory.parseString(s"""
             akka.remote.netty.tcp.port=$port
         """).withFallback(ConfigFactory.load())
 
-    // Create an Akka system
-    val system = ActorSystem("factdb", config)
-    // Create an actor that handles cluster domain events
+        // Create an Akka system
+        val system = ActorSystem("factdb", config)
+        // Create an actor that handles cluster domain events
 
-    system.actorOf(Props[Node], name = "hello")
+        //system.actorOf(Props[Node], name = "hello")
+
+        val services = Seq("c1")
+
+        services.foreach { s =>
+
+          system.actorOf(
+            ClusterSingletonManager.props(
+              singletonProps = Props(classOf[Service], s),
+              terminationMessage = PoisonPill,
+              settings = ClusterSingletonManagerSettings(system)), name = s)
+
+        }
+
+      }
+    }
+
+    val n = 3
+    val BASE_PORT = 2551
+    startup((0 until n).map(p => (p + BASE_PORT).toString))
 
   }
 
