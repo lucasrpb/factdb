@@ -25,9 +25,86 @@ message HelloWorld {
     string msg = 1;
 }
 
+message MVCCVersion {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    string k = 1;
+    uint64 v = 2;
+    string version = 3;
+}
+
+message Transaction {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    string id = 1;
+    repeated string keys = 2;
+
+    repeated MVCCVersion rs = 3;
+    repeated MVCCVersion ws = 4;
+
+    repeated string partitions = 5;
+    string worker = 6;
+    string coordinator = 7;
+}
+
+/*
 message Batch {
     option (scalapb.message).extends = "factdb.Command";
     option (scalapb.message).companion_extends = "factdb.Command";
 
-    repeated string txs = 1;
+    string id = 1;
+    repeated Transaction tasks = 2;
+    string coordinator = 3;
 }
+
+message Epoch {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    int32 epoch = 1;
+    map<string, Batch> data = 2;
+    repeated string visited = 3;
+    string version = 4;
+}
+
+message BatchDone {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    string id = 1;
+    repeated string aborted = 2;
+    repeated string committed = 3;
+}
+
+message PartitionExecute {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    string id = 1;
+    repeated Batch batches = 2;
+}
+
+message PartitionRelease {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    string id = 1;
+    repeated string tasks = 2;
+}
+
+message ReadRequest {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    repeated string keys = 1;
+}
+
+message ReadResponse {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    repeated MVCCVersion values = 1;
+}
+*/

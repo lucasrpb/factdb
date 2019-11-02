@@ -4,7 +4,7 @@
 		module="factdb_2.12"
 		revision="0.1"
 		status="integration"
-		publication="20191101013606"
+		publication="20191102110248"
 	>
 		<description>
 		factdb
@@ -39,6 +39,10 @@
 		<dependency org="com.google.guava" name="guava" rev="27.1-jre" conf="compile->default(compile)"/>
 		<dependency org="org.apache.commons" name="commons-lang3" rev="3.8.1" conf="compile->default(compile)"/>
 		<dependency org="org.scala-lang.modules" name="scala-collection-compat_2.12" rev="2.0.0" conf="compile->default(compile)"/>
+		<dependency org="io.vertx" name="vertx-codegen" rev="3.5.0" conf="provided->default(compile)"/>
+		<dependency org="io.vertx" name="vertx-lang-scala_2.12" rev="3.5.0" conf="compile->default(compile)"/>
+		<dependency org="io.vertx" name="vertx-hazelcast" rev="3.5.0" conf="compile->default(compile)"/>
+		<dependency org="io.vertx" name="vertx-kafka-client-scala_2.12" rev="3.5.0" conf="compile->default(compile)"/>
 		<dependency org="org.scala-lang.modules" name="scala-java8-compat_2.12" rev="0.9.0" conf="compile->default(compile)"/>
 		<dependency org="com.datastax.cassandra" name="cassandra-driver-core" rev="3.7.2" conf="compile->default(compile)"/>
 		<dependency org="com.typesafe.akka" name="akka-cluster_2.12" rev="2.5.26" conf="compile->default(compile)"/>

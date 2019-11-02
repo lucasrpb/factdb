@@ -1,3 +1,5 @@
+import Dependencies._
+
 name := "factdb"
 
 version := "0.1"
@@ -21,6 +23,12 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-collection-compat" % "2.0.0",
 
   "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf",
+
+  Library.vertx_codegen,
+  Library.vertx_lang_scala,
+  Library.vertx_hazelcast,
+  Library.vertx_kafka_client,
+  Library.vertx_codegen,
 
   "org.scala-lang.modules" %% "scala-collection-compat" % "2.0.0",
   "org.scala-lang.modules" % "scala-java8-compat_2.12" % "0.9.0",

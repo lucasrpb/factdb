@@ -1,2 +1,7 @@
-[0m[[0m[33mwarn[0m] [0m[0mthere was one feature warning; re-run with -feature for details[0m
-[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
+[0m[[0m[31merror[0m] [0m[0mD:\Users\lucas\IdeaProjects\factdb\src\main\scala\factdb\Coordinator.scala:19:20: not found: type Transaction[0m
+[0m[[0m[31merror[0m] [0m[0m  def process(cmd: Transaction): Unit = {[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0mD:\Users\lucas\IdeaProjects\factdb\src\main\scala\factdb\Coordinator.scala:24:15: not found: type Transaction[0m
+[0m[[0m[31merror[0m] [0m[0m    case cmd: Transaction => process(cmd)[0m
+[0m[[0m[31merror[0m] [0m[0m              ^[0m
+[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

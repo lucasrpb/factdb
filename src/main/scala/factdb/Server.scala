@@ -1,5 +1,7 @@
 package factdb
 
+import java.util.UUID
+
 import akka.actor.{ActorSystem, PoisonPill, Props}
 import akka.cluster.singleton.{ClusterSingletonManager, ClusterSingletonManagerSettings}
 import com.typesafe.config.ConfigFactory
@@ -21,18 +23,18 @@ object Server {
         val system = ActorSystem("factdb", config)
         // Create an actor that handles cluster domain events
 
-        system.actorOf(Props(classOf[Service], s"hello-${port}", port), name = s"hello-${port}")
+        //system.actorOf(Props(classOf[Service], s"hello-${port}", port), name = s"hello-${port}")
 
-       /* val services = Seq("c1")
+        system.actorOf(Props(classOf[Coordinator], UUID.randomUUID.toString), name = s"coordinator")
+
+        /*val services = Seq("c1")
 
         services.foreach { s =>
-
           system.actorOf(
             ClusterSingletonManager.props(
               singletonProps = Props(classOf[Service], s, port),
               terminationMessage = PoisonPill,
               settings = ClusterSingletonManagerSettings(system)), name = s)
-
         }*/
 
       }
