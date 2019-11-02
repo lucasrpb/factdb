@@ -29,7 +29,8 @@ libraryDependencies ++= Seq(
 
   "com.typesafe.akka" %% "akka-cluster" % akkaVersion,
   "com.typesafe.akka" %% "akka-cluster-metrics" % akkaVersion,
-  "com.typesafe.akka" %% "akka-cluster-tools" % akkaVersion
+  "com.typesafe.akka" %% "akka-cluster-tools" % akkaVersion,
+  "com.typesafe.akka" %% "akka-distributed-data" % akkaVersion
 )
 
 PB.targets in Compile := Seq(

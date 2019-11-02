@@ -7,27 +7,51 @@
 		revision="0.1"
 		conf="runtime-internal"
 		confs="compile, runtime, test, provided, optional, protobuf, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
-		date="20191031213553"/>
+		date="20191101013606"/>
 	<dependencies>
-		<module organisation="com.typesafe.akka" name="akka-cluster-tools_2.12">
-			<revision name="2.5.26" status="release" pubdate="20191017085010" resolver="public" artresolver="public" homepage="https://akka.io/" extra-info.apiURL="https://doc.akka.io/api/akka/2.5.26" downloaded="true" searched="true" default="false" conf="default, compile, runtime, default(compile), master" position="51">
+		<module organisation="com.typesafe.akka" name="akka-distributed-data_2.12">
+			<revision name="2.5.26" status="release" pubdate="20191017084830" resolver="public" artresolver="public" homepage="https://akka.io/" extra-info.apiURL="https://doc.akka.io/api/akka/2.5.26" downloaded="true" searched="true" default="false" conf="default, compile, runtime, default(compile), master" position="53">
 				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
-				<metadata-artifact status="successful" details="" size="2916" time="784" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-cluster-tools_2.12\ivy-2.5.26.xml" searched="true" original-local-location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-cluster-tools_2.12\ivy-2.5.26.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-cluster-tools_2.12/2.5.26/akka-cluster-tools_2.12-2.5.26.pom"/>
+				<metadata-artifact status="successful" details="" size="2902" time="824" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-distributed-data_2.12\ivy-2.5.26.xml" searched="true" original-local-location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-distributed-data_2.12\ivy-2.5.26.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-distributed-data_2.12/2.5.26/akka-distributed-data_2.12-2.5.26.pom"/>
 				<caller organisation="default" name="factdb_2.12" conf="compile, runtime-internal, runtime, optional" rev="2.5.26" rev-constraint-default="2.5.26" rev-constraint-dynamic="2.5.26" callerrev="0.1"/>
 				<artifacts>
-					<artifact name="akka-cluster-tools_2.12" type="jar" ext="jar" status="successful" details="" size="628972" time="1731" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-cluster-tools_2.12\jars\akka-cluster-tools_2.12-2.5.26.jar">
+					<artifact name="akka-distributed-data_2.12" type="jar" ext="jar" status="successful" details="" size="1170118" time="2227" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-distributed-data_2.12\jars\akka-distributed-data_2.12-2.5.26.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-distributed-data_2.12/2.5.26/akka-distributed-data_2.12-2.5.26.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.lmdbjava" name="lmdbjava">
+			<revision name="0.6.1" status="release" pubdate="20180424233932" resolver="public" artresolver="public" homepage="" downloaded="true" searched="true" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="54">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="successful" details="" size="7850" time="619" location="D:\Users\lucas\.ivy2\cache\org.lmdbjava\lmdbjava\ivy-0.6.1.xml" searched="true" original-local-location="D:\Users\lucas\.ivy2\cache\org.lmdbjava\lmdbjava\ivy-0.6.1.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/lmdbjava/lmdbjava/0.6.1/lmdbjava-0.6.1.pom"/>
+				<caller organisation="com.typesafe.akka" name="akka-distributed-data_2.12" conf="default, compile, runtime, master" rev="0.6.1" rev-constraint-default="0.6.1" rev-constraint-dynamic="0.6.1" callerrev="2.5.26"/>
+				<artifacts>
+					<artifact name="lmdbjava" type="jar" ext="jar" status="successful" details="" size="425812" time="2026" location="D:\Users\lucas\.ivy2\cache\org.lmdbjava\lmdbjava\jars\lmdbjava-0.6.1.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/lmdbjava/lmdbjava/0.6.1/lmdbjava-0.6.1.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.typesafe.akka" name="akka-cluster-tools_2.12">
+			<revision name="2.5.26" status="release" pubdate="20191017085010" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://akka.io/" extra-info.apiURL="https://doc.akka.io/api/akka/2.5.26" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="51">
+				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
+				<metadata-artifact status="no" details="" size="3670" time="0" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-cluster-tools_2.12\ivy-2.5.26.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-cluster-tools_2.12/2.5.26/akka-cluster-tools_2.12-2.5.26.pom"/>
+				<caller organisation="default" name="factdb_2.12" conf="compile, runtime-internal, runtime, optional" rev="2.5.26" rev-constraint-default="2.5.26" rev-constraint-dynamic="2.5.26" callerrev="0.1"/>
+				<artifacts>
+					<artifact name="akka-cluster-tools_2.12" type="jar" ext="jar" status="no" details="" size="628972" time="0" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-cluster-tools_2.12\jars\akka-cluster-tools_2.12-2.5.26.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-cluster-tools_2.12/2.5.26/akka-cluster-tools_2.12-2.5.26.jar"/>
 					</artifact>
 				</artifacts>
 			</revision>
 		</module>
 		<module organisation="com.typesafe.akka" name="akka-coordination_2.12">
-			<revision name="2.5.26" status="release" pubdate="20191017084820" resolver="public" artresolver="public" homepage="https://akka.io/" extra-info.apiURL="https://doc.akka.io/api/akka/2.5.26" downloaded="true" searched="true" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="52">
+			<revision name="2.5.26" status="release" pubdate="20191017084820" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://akka.io/" extra-info.apiURL="https://doc.akka.io/api/akka/2.5.26" downloaded="false" searched="false" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="52">
 				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
-				<metadata-artifact status="successful" details="" size="3730" time="596" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-coordination_2.12\ivy-2.5.26.xml" searched="true" original-local-location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-coordination_2.12\ivy-2.5.26.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-coordination_2.12/2.5.26/akka-coordination_2.12-2.5.26.pom"/>
+				<metadata-artifact status="no" details="" size="4283" time="0" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-coordination_2.12\ivy-2.5.26.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-coordination_2.12/2.5.26/akka-coordination_2.12-2.5.26.pom"/>
 				<caller organisation="com.typesafe.akka" name="akka-cluster-tools_2.12" conf="default, compile, runtime, master" rev="2.5.26" rev-constraint-default="2.5.26" rev-constraint-dynamic="2.5.26" callerrev="2.5.26"/>
 				<artifacts>
-					<artifact name="akka-coordination_2.12" type="jar" ext="jar" status="successful" details="" size="35717" time="1545" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-coordination_2.12\jars\akka-coordination_2.12-2.5.26.jar">
+					<artifact name="akka-coordination_2.12" type="jar" ext="jar" status="no" details="" size="35717" time="0" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-coordination_2.12\jars\akka-coordination_2.12-2.5.26.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-coordination_2.12/2.5.26/akka-coordination_2.12-2.5.26.jar"/>
 					</artifact>
 				</artifacts>
@@ -50,6 +74,7 @@
 				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
 				<metadata-artifact status="no" details="" size="3766" time="0" location="D:\Users\lucas\.ivy2\cache\com.typesafe.akka\akka-cluster_2.12\ivy-2.5.26.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/typesafe/akka/akka-cluster_2.12/2.5.26/akka-cluster_2.12-2.5.26.pom"/>
 				<caller organisation="default" name="factdb_2.12" conf="compile, runtime-internal, runtime, optional" rev="2.5.26" rev-constraint-default="2.5.26" rev-constraint-dynamic="2.5.26" callerrev="0.1"/>
+				<caller organisation="com.typesafe.akka" name="akka-distributed-data_2.12" conf="default, compile, runtime, master" rev="2.5.26" rev-constraint-default="2.5.26" rev-constraint-dynamic="2.5.26" callerrev="2.5.26"/>
 				<caller organisation="com.typesafe.akka" name="akka-cluster-metrics_2.12" conf="default, compile, runtime, master" rev="2.5.26" rev-constraint-default="2.5.26" rev-constraint-dynamic="2.5.26" callerrev="2.5.26"/>
 				<caller organisation="com.typesafe.akka" name="akka-cluster-tools_2.12" conf="default, compile, runtime, master" rev="2.5.26" rev-constraint-default="2.5.26" rev-constraint-dynamic="2.5.26" callerrev="2.5.26"/>
 				<artifacts>
@@ -240,6 +265,7 @@
 				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
 				<metadata-artifact status="no" details="" size="3476" time="0" location="D:\Users\lucas\.ivy2\cache\com.github.jnr\jnr-constants\ivy-0.9.9.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/github/jnr/jnr-constants/0.9.9/jnr-constants-0.9.9.pom"/>
 				<caller organisation="com.github.jnr" name="jnr-posix" conf="compile, runtime" rev="0.9.9" rev-constraint-default="0.9.9" rev-constraint-dynamic="0.9.9" callerrev="3.0.44"/>
+				<caller organisation="org.lmdbjava" name="lmdbjava" conf="compile, runtime" rev="0.9.9" rev-constraint-default="0.9.9" rev-constraint-dynamic="0.9.9" callerrev="0.6.1"/>
 				<artifacts>
 					<artifact name="jnr-constants" type="jar" ext="jar" status="no" details="" size="359323" time="0" location="D:\Users\lucas\.ivy2\cache\com.github.jnr\jnr-constants\jars\jnr-constants-0.9.9.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/github/jnr/jnr-constants/0.9.9/jnr-constants-0.9.9.jar"/>
@@ -253,6 +279,7 @@
 				<metadata-artifact status="no" details="" size="4965" time="0" location="D:\Users\lucas\.ivy2\cache\com.github.jnr\jnr-ffi\ivy-2.1.7.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/github/jnr/jnr-ffi/2.1.7/jnr-ffi-2.1.7.pom"/>
 				<caller organisation="com.datastax.cassandra" name="cassandra-driver-core" conf="default, compile, runtime, master" rev="2.1.7" rev-constraint-default="2.1.7" rev-constraint-dynamic="2.1.7" callerrev="3.7.2"/>
 				<caller organisation="com.github.jnr" name="jnr-posix" conf="compile, runtime" rev="2.1.7" rev-constraint-default="2.1.7" rev-constraint-dynamic="2.1.7" callerrev="3.0.44"/>
+				<caller organisation="org.lmdbjava" name="lmdbjava" conf="compile, runtime" rev="2.1.7" rev-constraint-default="2.1.7" rev-constraint-dynamic="2.1.7" callerrev="0.6.1"/>
 				<artifacts>
 					<artifact name="jnr-ffi" type="jar" ext="jar" status="no" details="" size="681158" time="0" location="D:\Users\lucas\.ivy2\cache\com.github.jnr\jnr-ffi\jars\jnr-ffi-2.1.7.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/github/jnr/jnr-ffi/2.1.7/jnr-ffi-2.1.7.jar"/>
@@ -684,6 +711,7 @@
 				<caller organisation="com.thesamet.scalapb" name="scalapb-runtime_2.12" conf="default, compile, runtime, master" rev="2.12.10" rev-constraint-default="2.12.10" rev-constraint-dynamic="2.12.10" callerrev="0.9.0"/>
 				<caller organisation="default" name="factdb_2.12" conf="compile, runtime-internal, runtime, optional" rev="2.12.10" rev-constraint-default="2.12.10" rev-constraint-dynamic="2.12.10" callerrev="0.1"/>
 				<caller organisation="com.typesafe.akka" name="akka-cluster_2.12" conf="default, compile, runtime, master" rev="2.12.10" rev-constraint-default="2.12.10" rev-constraint-dynamic="2.12.10" callerrev="2.5.26"/>
+				<caller organisation="com.typesafe.akka" name="akka-distributed-data_2.12" conf="default, compile, runtime, master" rev="2.12.10" rev-constraint-default="2.12.10" rev-constraint-dynamic="2.12.10" callerrev="2.5.26"/>
 				<caller organisation="com.typesafe.akka" name="akka-cluster-metrics_2.12" conf="default, compile, runtime, master" rev="2.12.10" rev-constraint-default="2.12.10" rev-constraint-dynamic="2.12.10" callerrev="2.5.26"/>
 				<caller organisation="org.scala-lang" name="scala-reflect" conf="compile, runtime" rev="2.12.10" rev-constraint-default="2.12.10" rev-constraint-dynamic="2.12.10" callerrev="2.12.10"/>
 				<caller organisation="com.typesafe.akka" name="akka-remote_2.12" conf="compile, runtime" rev="2.12.10" rev-constraint-default="2.12.10" rev-constraint-dynamic="2.12.10" callerrev="2.5.26"/>

@@ -21,19 +21,19 @@ object Server {
         val system = ActorSystem("factdb", config)
         // Create an actor that handles cluster domain events
 
-        //system.actorOf(Props[Node], name = "hello")
+        system.actorOf(Props(classOf[Service], s"hello-${port}", port), name = s"hello-${port}")
 
-        val services = Seq("c1")
+       /* val services = Seq("c1")
 
         services.foreach { s =>
 
           system.actorOf(
             ClusterSingletonManager.props(
-              singletonProps = Props(classOf[Service], s),
+              singletonProps = Props(classOf[Service], s, port),
               terminationMessage = PoisonPill,
               settings = ClusterSingletonManagerSettings(system)), name = s)
 
-        }
+        }*/
 
       }
     }

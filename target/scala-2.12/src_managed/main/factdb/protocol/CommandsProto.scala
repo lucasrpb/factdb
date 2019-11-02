@@ -13,14 +13,16 @@ object CommandsProto extends _root_.scalapb.GeneratedFileObject {
     Seq[_root_.scalapb.GeneratedMessageCompanion[_ <: _root_.scalapb.GeneratedMessage]](
       factdb.protocol.Ack,
       factdb.protocol.Nack,
-      factdb.protocol.HelloWorld
+      factdb.protocol.HelloWorld,
+      factdb.protocol.Batch
     )
   private lazy val ProtoBytes: Array[Byte] =
       scalapb.Encoding.fromBase64(scala.collection.immutable.Seq(
   """Cg5jb21tYW5kcy5wcm90bxoVc2NhbGFwYi9zY2FsYXBiLnByb3RvIioKA0Fjazoj4j8gCg5mYWN0ZGIuQ29tbWFuZBIOZmFjd
   GRiLkNvbW1hbmQiKwoETmFjazoj4j8gCg5mYWN0ZGIuQ29tbWFuZBIOZmFjdGRiLkNvbW1hbmQiTQoKSGVsbG9Xb3JsZBIaCgNtc
-  2cYASABKAlCCOI/BRIDbXNnUgNtc2c6I+I/IAoOZmFjdGRiLkNvbW1hbmQSDmZhY3RkYi5Db21tYW5kQhjiPxUKD2ZhY3RkYi5wc
-  m90b2NvbBABWABiBnByb3RvMw=="""
+  2cYASABKAlCCOI/BRIDbXNnUgNtc2c6I+I/IAoOZmFjdGRiLkNvbW1hbmQSDmZhY3RkYi5Db21tYW5kIkgKBUJhdGNoEhoKA3R4c
+  xgBIAMoCUII4j8FEgN0eHNSA3R4czoj4j8gCg5mYWN0ZGIuQ29tbWFuZBIOZmFjdGRiLkNvbW1hbmRCGOI/FQoPZmFjdGRiLnByb
+  3RvY29sEAFYAGIGcHJvdG8z"""
       ).mkString)
   lazy val scalaDescriptor: _root_.scalapb.descriptors.FileDescriptor = {
     val scalaProto = com.google.protobuf.descriptor.FileDescriptorProto.parseFrom(ProtoBytes)

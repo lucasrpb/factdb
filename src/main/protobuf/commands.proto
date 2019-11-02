@@ -24,3 +24,10 @@ message HelloWorld {
 
     string msg = 1;
 }
+
+message Batch {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    repeated string txs = 1;
+}

@@ -4,7 +4,7 @@
 		module="factdb_2.12"
 		revision="0.1"
 		status="integration"
-		publication="20191031213553"
+		publication="20191101013606"
 	>
 		<description>
 		factdb
@@ -44,5 +44,6 @@
 		<dependency org="com.typesafe.akka" name="akka-cluster_2.12" rev="2.5.26" conf="compile->default(compile)"/>
 		<dependency org="com.typesafe.akka" name="akka-cluster-metrics_2.12" rev="2.5.26" conf="compile->default(compile)"/>
 		<dependency org="com.typesafe.akka" name="akka-cluster-tools_2.12" rev="2.5.26" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.akka" name="akka-distributed-data_2.12" rev="2.5.26" conf="compile->default(compile)"/>
 	</dependencies>
 </ivy-module>

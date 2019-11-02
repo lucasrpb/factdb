@@ -18,8 +18,14 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Nack$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Nack$NackLens.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Nack$NackLens.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Batch.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Batch.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\package$SameMessage$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\package$SameMessage$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Command.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Command.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\package$SameMessage.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\package$SameMessage.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Service.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Service.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Server.class[0m
@@ -28,6 +34,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\CommandsProto.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\CommandsProto.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Batch$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Batch$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	client.conf[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\client.conf[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Ack.class[0m
@@ -36,6 +44,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Client$$anonfun$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Ack$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Ack$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Batch$BatchLens.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Batch$BatchLens.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\HelloWorld$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\HelloWorld$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Service$$anonfun$receive$1.class[0m

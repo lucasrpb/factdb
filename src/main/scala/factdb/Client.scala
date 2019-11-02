@@ -1,5 +1,7 @@
 package factdb
 
+import java.util.UUID
+
 import akka.actor.{ActorPath, ActorSystem}
 import akka.cluster.client.{ClusterClient, ClusterClientSettings}
 
@@ -26,7 +28,7 @@ object Client {
 
     implicit val timeout = new Timeout(5 seconds)
 
-    val f = (client ? ClusterClient.Send("/user/c1/singleton", HelloWorld("Lucas"), localAffinity = false))
+    val f = (client ? ClusterClient.Send("/user/hello-2553", HelloWorld(UUID.randomUUID.toString), localAffinity = false))
       .mapTo[HelloWorld].map { response =>
       println(s"${Console.GREEN_B}response ${response}${Console.RESET}\n")
     }.recover { case ex =>
