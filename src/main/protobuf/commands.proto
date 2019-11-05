@@ -49,25 +49,22 @@ message Transaction {
     string coordinator = 7;
 }
 
-/*
 message Batch {
     option (scalapb.message).extends = "factdb.Command";
     option (scalapb.message).companion_extends = "factdb.Command";
 
     string id = 1;
-    repeated Transaction tasks = 2;
+    repeated Transaction txs = 2;
     string coordinator = 3;
 }
 
-message Epoch {
+/*message Epoch {
     option (scalapb.message).extends = "factdb.Command";
     option (scalapb.message).companion_extends = "factdb.Command";
 
     int32 epoch = 1;
-    map<string, Batch> data = 2;
-    repeated string visited = 3;
-    string version = 4;
-}
+    map<string, string> data = 2;
+}*/
 
 message BatchDone {
     option (scalapb.message).extends = "factdb.Command";
@@ -83,7 +80,8 @@ message PartitionExecute {
     option (scalapb.message).companion_extends = "factdb.Command";
 
     string id = 1;
-    repeated Batch batches = 2;
+    repeated Transaction acks = 2;
+    repeated Transaction nacks = 3;
 }
 
 message PartitionRelease {
@@ -91,7 +89,7 @@ message PartitionRelease {
     option (scalapb.message).companion_extends = "factdb.Command";
 
     string id = 1;
-    repeated string tasks = 2;
+    repeated string txs = 2;
 }
 
 message ReadRequest {
@@ -107,4 +105,3 @@ message ReadResponse {
 
     repeated MVCCVersion values = 1;
 }
-*/
