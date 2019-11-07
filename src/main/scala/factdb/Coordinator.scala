@@ -21,8 +21,6 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 class Coordinator(val id: String) extends Actor with ActorLogging {
 
   implicit val ec: ExecutionContext = context.dispatcher
-  val config = scala.collection.mutable.Map[String, String]()
-
   val scheduler = context.system.scheduler
 
   implicit val cluster = Cluster(context.system)
@@ -36,6 +34,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
   val READ = session.prepare("select * from data where key=?;")
 
+  val config = scala.collection.mutable.Map[String, String]()
   config += (ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
   //config += (ProducerConfig.LINGER_MS_CONFIG -> "10")
   //config += (ProducerConfig.BATCH_SIZE_CONFIG -> (1024 * 1024 * 10).toString)
@@ -80,14 +79,16 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
       val r = batches.poll()
       val elapsed = now - r.tmp
 
-      if(elapsed >= TIMEOUT){
+      /*if(elapsed >= TIMEOUT){
         r.p.success(false)
       } else if(!r.t.keys.exists{keys.contains(_)}) {
         keys = keys ++ r.t.keys
         tasks = tasks :+ r
       } else {
         r.p.success(false)
-      }
+      }*/
+
+      tasks = tasks :+ r
     }
 
     if(tasks.isEmpty){

@@ -80,7 +80,7 @@ class Worker(val id: String) extends Actor with ActorLogging {
     cMap.put(c, proxy)
   }
 
-  def release(list: Seq[Transaction], tasks: TrieMap[String, (Transaction, Seq[String], Seq[String])]): Unit = {
+  def release(list: Seq[Transaction]): Unit = {
     var requests = Map.empty[String, Seq[String]]
 
     list.foreach { t =>
@@ -122,14 +122,14 @@ class Worker(val id: String) extends Actor with ActorLogging {
   def execute(): Unit = {
 
     val list = tasks.filter { case (_, (t, acks, nacks)) =>
-      val all = acks ++ nacks
-      t.partitions.forall(all.contains(_))
+      val parts = acks ++ nacks
+      t.partitions.forall(parts.contains(_))
     }
 
     if(list.isEmpty) return
 
-    list.foreach { case (t, _) =>
-      tasks.remove(t)
+    list.foreach { t =>
+      tasks.remove(t._1)
     }
 
     val abort = list.filter{!_._2._3.isEmpty}.map(_._2._1).toSeq
@@ -138,19 +138,24 @@ class Worker(val id: String) extends Actor with ActorLogging {
     println(s"executing tasks ${commit.map(_.id)}\n")
     println(s"aborting tasks ${abort.map(_.id)}\n")
 
-    check(commit).flatMap { reads =>
+    val txs = list.values.map(_._1).toSeq
+
+    /*check(commit).flatMap { reads =>
       val failures = abort ++ reads.filter(!_._2).map(_._1)
       val successes = reads.filter(_._2).map(_._1)
 
       write(successes).map { ok =>
-        release(failures ++ successes, list)
+        release(txs)
         sendToCoordinator(failures, successes)
         true
       }
-    }
+    }*/
+
+    release(txs)
+    sendToCoordinator(Seq.empty[Transaction], txs)
   }
 
-  def process(cmd: PartitionExecute): Unit = synchronized {
+  def process(cmd: PartitionExecute): Unit = {
 
     cmd.acks.foreach { t =>
       tasks.get(t.id) match {

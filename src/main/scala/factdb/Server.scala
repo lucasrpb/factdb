@@ -16,11 +16,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object Server {
 
   val n = 3
-  val PARTITIONS = 3
 
   val coordinators = Seq("c1", "c2", "c3")
   val partitions = Seq("p0", "p1", "p2")
   val workers = Seq("w0", "w1", "w2")
+
+  val PARTITIONS = partitions.length
 
   /*val pMap = TrieMap[String, ActorRef]()
   val wMap = TrieMap[String, ActorRef]()
@@ -31,18 +32,18 @@ object Server {
     //val port = args(0)
 
     val admin = AdminUtils.create(Vertx.vertx(), "localhost:2181", false)
-    val p = Promise[Boolean]()
 
-    admin.deleteTopic("batches", r => {
-      println(s"topic batches deleted ${r.succeeded()}")
+    val p = for {
+      _ <-  admin.deleteTopicFuture("batches")
+      _ <-  admin.deleteTopicFuture("log")
+      _ <-  admin.createTopicFuture("batches", PARTITIONS, 1)
+      _ <-  admin.createTopicFuture("log", 1, 1)
+      _ <-  admin.closeFuture()
+    } yield {
+      true
+    }
 
-      admin.createTopic("batches", PARTITIONS, 1, r => {
-        println(s"topic batches created ${r.succeeded()}")
-        p.success(true)
-      })
-    })
-
-    Await.ready(p.future, Duration.Inf)
+    Await.ready(p, Duration.Inf)
 
     def startup(ports: Seq[String]): Unit = {
       ports foreach { port =>
@@ -85,6 +86,12 @@ object Server {
               terminationMessage = PoisonPill,
               settings = ClusterSingletonManagerSettings(system)), name = s)
         }
+
+        system.actorOf(
+          ClusterSingletonManager.props(
+            singletonProps = Props(classOf[Aggregator]),
+            terminationMessage = PoisonPill,
+            settings = ClusterSingletonManagerSettings(system)), name = "aggregator")
 
       }
     }

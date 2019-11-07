@@ -1,2 +1,4 @@
-[0m[[0m[33mwarn[0m] [0m[0mthere were four feature warnings; re-run with -feature for details[0m
-[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
+[0m[[0m[31merror[0m] [0m[0mD:\Users\lucas\IdeaProjects\factdb\src\main\scala\factdb\Partition.scala:62:7: value batches is not a member of factdb.protocol.Epoch[0m
+[0m[[0m[31merror[0m] [0m[0m    e.batches.foreach { b =>[0m
+[0m[[0m[31merror[0m] [0m[0m      ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m

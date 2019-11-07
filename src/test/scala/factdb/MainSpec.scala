@@ -44,7 +44,7 @@ class MainSpec extends FlatSpec {
 
     implicit val ec = system.dispatcher
 
-    val n = 100
+    val n = 1000
     var tasks = Seq.empty[Future[Boolean]]
     var clients = Seq.empty[Client]
 
@@ -86,7 +86,7 @@ class MainSpec extends FlatSpec {
 
     val ta = session.execute("select sum(value) as total from data;").one.getLong("total")
 
-    println(s"${Console.YELLOW}total before ${tb} total after ${ta}${Console.YELLOW}\n\n")
+    println(s"${Console.YELLOW}total before ${tb} total after ${ta}${Console.RESET}\n\n")
 
     session.close()
     cluster.close()

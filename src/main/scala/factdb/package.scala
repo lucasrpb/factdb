@@ -7,7 +7,7 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 
 package object factdb {
 
-  val TIMEOUT = 500L
+  val TIMEOUT = 200L
 
   val accounts = TrieMap[String, Long]()
 
@@ -36,6 +36,17 @@ package object factdb {
     override def merge(that: SameMessage): SameMessage = that
   }
 
+  /*case class Executed(epoch: Long, partitions: Seq[String]) extends ReplicatedData {
+    override type T = Executed
+
+    override def merge(that: Executed): Executed = {
+      if(epoch < that.epoch) return that
+      if(epoch > that.epoch) return this
+
+      Executed(epoch, partitions ++ that.partitions)
+    }
+  }
+
   case class Epoch(epoch: Long, batches: Map[String, Option[Batch]]) extends ReplicatedData {
     override type T = Epoch
 
@@ -46,5 +57,5 @@ package object factdb {
       Epoch(epoch, batches ++ that.batches)
     }
   }
-
+*/
 }

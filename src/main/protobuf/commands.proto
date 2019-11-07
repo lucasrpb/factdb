@@ -58,13 +58,14 @@ message Batch {
     string coordinator = 3;
 }
 
-/*message Epoch {
+message Epoch {
     option (scalapb.message).extends = "factdb.Command";
     option (scalapb.message).companion_extends = "factdb.Command";
 
-    int32 epoch = 1;
-    map<string, string> data = 2;
-}*/
+    string epoch = 1;
+    //repeated Batch batches = 2;
+    repeated Transaction txs = 2;
+}
 
 message BatchDone {
     option (scalapb.message).extends = "factdb.Command";

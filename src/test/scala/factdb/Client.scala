@@ -47,7 +47,7 @@ class Client(val system: ActorSystem, val settings: ClusterClientSettings) {
 
       (client ? ClusterClient.Send(s"/user/${c}/singleton", tx, localAffinity = false)).mapTo[Boolean]
     }.recover { case e =>
-      e.printStackTrace()
+      //e.printStackTrace()
       false
     }.map {
       _ match {

@@ -1,9 +1,9 @@
 package factdb
 
 import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.atomic.{AtomicBoolean, AtomicReference}
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicLong, AtomicReference}
 
-import akka.actor.{Actor, ActorLogging, ActorPath, ActorRef}
+import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.cluster.Cluster
 import akka.cluster.client.ClusterClientReceptionist
 import akka.cluster.ddata.{DistributedData, ORMap, ORMapKey, Replicator}
@@ -17,6 +17,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
+import akka.pattern._
+import akka.util.Timeout
 import scala.concurrent.duration._
 
 class Partition(val id: String, val partition: Int) extends Actor with ActorLogging {
@@ -41,48 +43,32 @@ class Partition(val id: String, val partition: Int) extends Actor with ActorLogg
   // use consumer for interacting with Apache Kafka
   val consumer = KafkaConsumer.create[String, Array[Byte]](vertx, config)
 
-  consumer.subscribeFuture("batches").onComplete {
+  consumer.subscribeFuture("log").onComplete {
     case Success(result) => {
       println(s"partition ${id} subscribed!")
     }
     case Failure(cause) => cause.printStackTrace()
   }
 
-  val replicator: ActorRef = DistributedData(context.system).replicator
-  implicit val node = DistributedData(context.system).selfUniqueAddress
-
-  val Key = ORMapKey.create[String, Epoch]("epoch")
-
-  val sent = new AtomicBoolean(false)
-  var epoch: Long = 0L
-  var batch: Option[Batch] = None
-
-  replicator ! Replicator.Subscribe(Key, self)
-
   def handle(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
-    if(evt.partition() != partition){
+    /*if(evt.partition() != partition){
       consumer.commit()
       return
-    }
+    }*/
 
     consumer.pause()
+    val e = Any.parseFrom(evt.value()).unpack(Epoch)
 
-    val b = Any.parseFrom(evt.value()).unpack(Batch)
-    batch = Some(b)
-
-    if(sent.compareAndSet(false, true)){
-      replicator ! Replicator.Update(Key, ORMap.empty[String, Epoch], Replicator.WriteLocal){
-        _.put(node, "epoch", Epoch(epoch, Map(id -> batch)))
-      }
+    e.txs.foreach { t =>
+      transactions.put(t.id, t)
     }
 
-    println(s"partition ${id} processing batch ${b.id}\n")
+    process()
   }
 
   consumer.handler(handle)
 
   val rand = ThreadLocalRandom.current()
-  //val tasks = TrieMap[String, (Transaction, String)]()
   val executing = TrieMap[String, Transaction]()
 
   val wMap = TrieMap[String, ActorRef]()
@@ -98,16 +84,28 @@ class Partition(val id: String, val partition: Int) extends Actor with ActorLogg
     wMap.put(w, proxy)
   }
 
-  def process(batches: Seq[Batch]): Unit = {
+  val pMap = TrieMap[String, ActorRef]()
 
-    val list = batches.map(_.txs.filter(_.partitions.contains(id))).flatten.sortBy(_.id)
+  Server.partitions.foreach { p =>
+
+    val proxy = context.actorOf(
+      ClusterSingletonProxy.props(
+        singletonManagerPath = s"/user/$p",
+        settings = ClusterSingletonProxySettings(context.system)),
+      name = s"proxy-${p}")
+
+    pMap.put(p, proxy)
+  }
+
+  val transactions = TrieMap[String, Transaction]()
+
+  def process(): Unit = {
+
+    val list = transactions.toSeq.map(_._2).sortBy(_.id).filter(_.partitions.contains(id))
 
     if(list.isEmpty) {
 
-      epoch += 1L
-      batch = None
-      sent.set(false)
-
+      transactions.clear()
       consumer.commit()
       consumer.resume()
 
@@ -119,20 +117,21 @@ class Partition(val id: String, val partition: Int) extends Actor with ActorLogg
     var commit = Seq.empty[Transaction]
 
     list.foreach { t =>
-      val tkeys = t.keys.filter(computeHash(_).equals(id))
+      val tkeys = t.keys//.filter(computeHash(_).equals(id))
 
-      if(!tkeys.exists(keys.contains(_))){
+      if (!tkeys.exists(keys.contains(_))) {
         keys = keys ++ t.keys
         commit = commit :+ t
         executing.put(t.id, t)
-      } else {
+        transactions.remove(t.id)
+      } /*else {
         abort = abort :+ t
-      }
+      }*/
     }
 
-    var requests = Map.empty[String, PartitionExecute]
+    println(s"${Console.RED_B}partition ${id} processing txs: ${commit.map(_.id)}...${Console.RESET}\n")
 
-    println(s"sending ${commit.map(_.id)}\n")
+    var requests = Map.empty[String, PartitionExecute]
 
     abort.foreach { t =>
       requests.get(t.worker) match {
@@ -158,16 +157,13 @@ class Partition(val id: String, val partition: Int) extends Actor with ActorLogg
       executing.remove(t)
     }
 
-    if(executing.isEmpty){
-      epoch += 1L
-      batch = None
-      sent.set(false)
-
+    if(transactions.isEmpty){
       consumer.commit()
       consumer.resume()
+      return
     }
 
-    sender ! true
+    process()
   }
 
   override def preStart(): Unit = {
@@ -179,41 +175,7 @@ class Partition(val id: String, val partition: Int) extends Actor with ActorLogg
   }
 
   override def receive: Receive = {
-
     case cmd: PartitionRelease => process(cmd)
-
-    case change @ Replicator.Changed(Key) =>
-      val data = change.get(Key)
-
-      val e = data.get("epoch")
-
-      if(e.isDefined && e.get.epoch == epoch && Server.partitions.forall(e.get.batches.contains(_))) {
-        val batches = e.get.batches.values.flatten.toSeq
-
-        println(s"${Console.RED_B}all batches seen by partition ${id} epoch = ${e.get.epoch}: " +
-          s"${batches.map(_.id)}${Console.RESET}\n")
-
-        /*scheduler.scheduleOnce(rand.nextInt(0, 10) milliseconds){
-          epoch += 1L
-          batch = None
-          sent.set(false)
-
-          consumer.commit()
-          consumer.resume()
-        }*/
-
-        process(batches)
-
-      } else {
-
-        if(sent.compareAndSet(false, true)){
-          replicator ! Replicator.Update(Key, ORMap.empty[String, Epoch], Replicator.WriteLocal){
-            _.put(node, "epoch", Epoch(epoch, Map(id -> batch)))
-          }
-        }
-
-      }
-
     case _ =>
   }
 }
