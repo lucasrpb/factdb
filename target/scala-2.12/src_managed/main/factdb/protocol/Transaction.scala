@@ -12,7 +12,6 @@ final case class Transaction(
     rs: _root_.scala.Seq[factdb.protocol.MVCCVersion] = _root_.scala.Seq.empty,
     ws: _root_.scala.Seq[factdb.protocol.MVCCVersion] = _root_.scala.Seq.empty,
     partitions: _root_.scala.Seq[_root_.scala.Predef.String] = _root_.scala.Seq.empty,
-    worker: _root_.scala.Predef.String = "",
     coordinator: _root_.scala.Predef.String = ""
     ) extends scalapb.GeneratedMessage with scalapb.Message[Transaction] with scalapb.lenses.Updatable[Transaction] with factdb.Command {
     @transient
@@ -44,16 +43,9 @@ final case class Transaction(
       }
       
       {
-        val __value = worker
-        if (__value != "") {
-          __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(6, __value)
-        }
-      };
-      
-      {
         val __value = coordinator
         if (__value != "") {
-          __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(7, __value)
+          __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(6, __value)
         }
       };
       __size
@@ -94,15 +86,9 @@ final case class Transaction(
         _output__.writeString(5, __m)
       };
       {
-        val __v = worker
-        if (__v != "") {
-          _output__.writeString(6, __v)
-        }
-      };
-      {
         val __v = coordinator
         if (__v != "") {
-          _output__.writeString(7, __v)
+          _output__.writeString(6, __v)
         }
       };
     }
@@ -112,7 +98,6 @@ final case class Transaction(
       val __rs = (_root_.scala.collection.immutable.Vector.newBuilder[factdb.protocol.MVCCVersion] ++= this.rs)
       val __ws = (_root_.scala.collection.immutable.Vector.newBuilder[factdb.protocol.MVCCVersion] ++= this.ws)
       val __partitions = (_root_.scala.collection.immutable.Vector.newBuilder[_root_.scala.Predef.String] ++= this.partitions)
-      var __worker = this.worker
       var __coordinator = this.coordinator
       var _done__ = false
       while (!_done__) {
@@ -130,8 +115,6 @@ final case class Transaction(
           case 42 =>
             __partitions += _input__.readString()
           case 50 =>
-            __worker = _input__.readString()
-          case 58 =>
             __coordinator = _input__.readString()
           case tag => _input__.skipField(tag)
         }
@@ -142,7 +125,6 @@ final case class Transaction(
           rs = __rs.result(),
           ws = __ws.result(),
           partitions = __partitions.result(),
-          worker = __worker,
           coordinator = __coordinator
       )
     }
@@ -163,7 +145,6 @@ final case class Transaction(
     def addPartitions(__vs: _root_.scala.Predef.String*): Transaction = addAllPartitions(__vs)
     def addAllPartitions(__vs: Iterable[_root_.scala.Predef.String]): Transaction = copy(partitions = partitions ++ __vs)
     def withPartitions(__v: _root_.scala.Seq[_root_.scala.Predef.String]): Transaction = copy(partitions = __v)
-    def withWorker(__v: _root_.scala.Predef.String): Transaction = copy(worker = __v)
     def withCoordinator(__v: _root_.scala.Predef.String): Transaction = copy(coordinator = __v)
     def getFieldByNumber(__fieldNumber: _root_.scala.Int): _root_.scala.Any = {
       (__fieldNumber: @_root_.scala.unchecked) match {
@@ -176,10 +157,6 @@ final case class Transaction(
         case 4 => ws
         case 5 => partitions
         case 6 => {
-          val __t = worker
-          if (__t != "") __t else null
-        }
-        case 7 => {
           val __t = coordinator
           if (__t != "") __t else null
         }
@@ -193,8 +170,7 @@ final case class Transaction(
         case 3 => _root_.scalapb.descriptors.PRepeated(rs.iterator.map(_.toPMessage).toVector)
         case 4 => _root_.scalapb.descriptors.PRepeated(ws.iterator.map(_.toPMessage).toVector)
         case 5 => _root_.scalapb.descriptors.PRepeated(partitions.iterator.map(_root_.scalapb.descriptors.PString).toVector)
-        case 6 => _root_.scalapb.descriptors.PString(worker)
-        case 7 => _root_.scalapb.descriptors.PString(coordinator)
+        case 6 => _root_.scalapb.descriptors.PString(coordinator)
       }
     }
     def toProtoString: _root_.scala.Predef.String = _root_.scalapb.TextFormat.printToUnicodeString(this)
@@ -212,8 +188,7 @@ object Transaction extends scalapb.GeneratedMessageCompanion[factdb.protocol.Tra
       __fieldsMap.getOrElse(__fields.get(2), Nil).asInstanceOf[_root_.scala.Seq[factdb.protocol.MVCCVersion]],
       __fieldsMap.getOrElse(__fields.get(3), Nil).asInstanceOf[_root_.scala.Seq[factdb.protocol.MVCCVersion]],
       __fieldsMap.getOrElse(__fields.get(4), Nil).asInstanceOf[_root_.scala.Seq[_root_.scala.Predef.String]],
-      __fieldsMap.getOrElse(__fields.get(5), "").asInstanceOf[_root_.scala.Predef.String],
-      __fieldsMap.getOrElse(__fields.get(6), "").asInstanceOf[_root_.scala.Predef.String]
+      __fieldsMap.getOrElse(__fields.get(5), "").asInstanceOf[_root_.scala.Predef.String]
     )
   }
   implicit def messageReads: _root_.scalapb.descriptors.Reads[factdb.protocol.Transaction] = _root_.scalapb.descriptors.Reads{
@@ -225,8 +200,7 @@ object Transaction extends scalapb.GeneratedMessageCompanion[factdb.protocol.Tra
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(3).get).map(_.as[_root_.scala.Seq[factdb.protocol.MVCCVersion]]).getOrElse(_root_.scala.Seq.empty),
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(4).get).map(_.as[_root_.scala.Seq[factdb.protocol.MVCCVersion]]).getOrElse(_root_.scala.Seq.empty),
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(5).get).map(_.as[_root_.scala.Seq[_root_.scala.Predef.String]]).getOrElse(_root_.scala.Seq.empty),
-        __fieldsMap.get(scalaDescriptor.findFieldByNumber(6).get).map(_.as[_root_.scala.Predef.String]).getOrElse(""),
-        __fieldsMap.get(scalaDescriptor.findFieldByNumber(7).get).map(_.as[_root_.scala.Predef.String]).getOrElse("")
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(6).get).map(_.as[_root_.scala.Predef.String]).getOrElse("")
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
@@ -250,7 +224,6 @@ object Transaction extends scalapb.GeneratedMessageCompanion[factdb.protocol.Tra
     def rs: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Seq[factdb.protocol.MVCCVersion]] = field(_.rs)((c_, f_) => c_.copy(rs = f_))
     def ws: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Seq[factdb.protocol.MVCCVersion]] = field(_.ws)((c_, f_) => c_.copy(ws = f_))
     def partitions: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Seq[_root_.scala.Predef.String]] = field(_.partitions)((c_, f_) => c_.copy(partitions = f_))
-    def worker: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Predef.String] = field(_.worker)((c_, f_) => c_.copy(worker = f_))
     def coordinator: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Predef.String] = field(_.coordinator)((c_, f_) => c_.copy(coordinator = f_))
   }
   final val ID_FIELD_NUMBER = 1
@@ -258,15 +231,13 @@ object Transaction extends scalapb.GeneratedMessageCompanion[factdb.protocol.Tra
   final val RS_FIELD_NUMBER = 3
   final val WS_FIELD_NUMBER = 4
   final val PARTITIONS_FIELD_NUMBER = 5
-  final val WORKER_FIELD_NUMBER = 6
-  final val COORDINATOR_FIELD_NUMBER = 7
+  final val COORDINATOR_FIELD_NUMBER = 6
   def of(
     id: _root_.scala.Predef.String,
     keys: _root_.scala.Seq[_root_.scala.Predef.String],
     rs: _root_.scala.Seq[factdb.protocol.MVCCVersion],
     ws: _root_.scala.Seq[factdb.protocol.MVCCVersion],
     partitions: _root_.scala.Seq[_root_.scala.Predef.String],
-    worker: _root_.scala.Predef.String,
     coordinator: _root_.scala.Predef.String
   ): _root_.factdb.protocol.Transaction = _root_.factdb.protocol.Transaction(
     id,
@@ -274,7 +245,6 @@ object Transaction extends scalapb.GeneratedMessageCompanion[factdb.protocol.Tra
     rs,
     ws,
     partitions,
-    worker,
     coordinator
   )
 }

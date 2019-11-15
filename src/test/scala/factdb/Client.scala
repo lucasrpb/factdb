@@ -22,11 +22,11 @@ class Client(val system: ActorSystem, val settings: ClusterClientSettings) {
   implicit val timeout = new Timeout(300 seconds)
   implicit val ec = system.dispatcher
 
-  val tid = UUID.randomUUID.toString()
   val rand = ThreadLocalRandom.current()
 
   def execute(f: ((String, Map[String, MVCCVersion])) => Map[String, MVCCVersion]): Future[Boolean] = {
 
+    val tid = UUID.randomUUID.toString
     val accs = accounts.keys.toSeq
 
     val k1 = accs(rand.nextInt(0, accs.length)).toString
@@ -41,14 +41,10 @@ class Client(val system: ActorSystem, val settings: ClusterClientSettings) {
       val writes = f(tid -> reads.map(v => v.k -> v).toMap)
 
       val dkeys = keys.distinct
-      val partitions = dkeys.map(computeHash(_)).distinct
-      val tx = Transaction(tid, dkeys, reads, writes.map(_._2).toSeq, partitions,
-        scala.util.Random.shuffle(Server.workers).head, c)
+      val partitions = dkeys.map(computePartition(_)).distinct
+      val tx = Transaction(tid, dkeys, reads, writes.map(_._2).toSeq, partitions, c)
 
       (client ? ClusterClient.Send(s"/user/${c}/singleton", tx, localAffinity = false)).mapTo[Boolean]
-    }.recover { case e =>
-      //e.printStackTrace()
-      false
     }.map {
       _ match {
         case true =>
@@ -58,18 +54,10 @@ class Client(val system: ActorSystem, val settings: ClusterClientSettings) {
           println(s"tx ${tid} failed")
           false
       }
-    }
-
-    /*val t = Transaction(UUID.randomUUID.toString)
-
-    (client ? ClusterClient.Send(s"/user/${c}/singleton", t, localAffinity = false))
-      .mapTo[Boolean].map { response =>
-      println(s"${Console.GREEN_B}transaction response ${response}${Console.RESET}\n")
-      response
     }.recover { case e =>
       e.printStackTrace()
       false
-    }*/
+    }
   }
 
   def stop(): Unit = {

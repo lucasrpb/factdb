@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom
 import akka.actor.{ActorPath, ActorSystem}
 import akka.cluster.client.ClusterClientSettings
 import com.datastax.driver.core.Cluster
+import com.typesafe.config.ConfigFactory
 import factdb.protocol._
 import org.scalatest.FlatSpec
 
@@ -35,8 +36,8 @@ class MainSpec extends FlatSpec {
 
     val tb = session.execute("select sum(value) as total from data;").one.getLong("total")
 
-    val system = ActorSystem("factdb")
-
+    val system = ActorSystem("client", ConfigFactory.load("client.conf"))
+      
     val initialContacts = Set(
       ActorPath.fromString("akka.tcp://factdb@127.0.0.1:2551/system/receptionist"),
       ActorPath.fromString("akka.tcp://factdb@127.0.0.1:2552/system/receptionist"))
@@ -44,13 +45,18 @@ class MainSpec extends FlatSpec {
 
     implicit val ec = system.dispatcher
 
-    val n = 1000
+    val n = 2000
     var tasks = Seq.empty[Future[Boolean]]
+
     var clients = Seq.empty[Client]
+    val nclients = 100
+
+    for(i<-0 until nclients){
+      clients = clients :+ new Client(system, settings)
+    }
 
     for(i<-0 until n){
-      val client = new Client(system, settings)
-      clients = clients :+ client
+      val client = clients(rand.nextInt(0, clients.length))
       tasks = tasks :+ client.execute{ case (tid, reads) =>
 
         val keys = reads.keys

@@ -10,6 +10,7 @@ import akka.cluster.client.ClusterClientReceptionist
 import scala.concurrent.duration._
 import factdb.protocol._
 import akka.pattern._
+import com.datastax.driver.core.{HostDistance, PoolingOptions}
 import com.google.protobuf.any.Any
 import io.vertx.scala.core.Vertx
 import io.vertx.scala.kafka.client.producer.{KafkaProducer, KafkaProducerRecord}
@@ -26,13 +27,21 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
   implicit val cluster = Cluster(context.system)
   ClusterClientReceptionist(context.system).registerService(self)
 
+  val poolingOptions = new PoolingOptions()
+    //.setConnectionsPerHost(HostDistance.LOCAL, 1, 200)
+    .setMaxRequestsPerConnection(HostDistance.LOCAL, 2000)
+    //.setNewConnectionThreshold(HostDistance.LOCAL, 2000)
+    //.setCoreConnectionsPerHost(HostDistance.LOCAL, 2000)
+
   val ycluster = com.datastax.driver.core.Cluster.builder()
     .addContactPoint("127.0.0.1")
+    .withPoolingOptions(poolingOptions)
     .build()
 
   val session = ycluster.connect("s2")
 
   val READ = session.prepare("select * from data where key=?;")
+  val INSERT_BATCH = session.prepare("insert into batches(id, completed) values(?,false);")
 
   val config = scala.collection.mutable.Map[String, String]()
   config += (ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
@@ -47,10 +56,14 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
   // use producer for interacting with Apache Kafka
   val producer = KafkaProducer.create[String, Array[Byte]](vertx, config)
 
+  def save(b: Batch): Future[Boolean] = {
+    session.executeAsync(INSERT_BATCH.bind.setString(0, b.id)).map(_.wasApplied())
+  }
+
   def logb(b: Batch): Future[Boolean] = {
     val buf = Any.pack(b).toByteArray
     val now = System.currentTimeMillis()
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf)
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf)
 
     producer.writeFuture(record).map { _ =>
       true
@@ -75,30 +88,48 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     var tasks = Seq.empty[Request]
     var keys = Seq.empty[String]
 
-    while(!batches.isEmpty){
+    val it = batches.iterator()
+
+    while(it.hasNext){
+      tasks = tasks :+ it.next()
+    }
+
+    tasks = tasks.filter { r =>
+      if(!r.t.keys.exists{keys.contains(_)}) {
+        keys = keys ++ r.t.keys
+        batches.remove(r)
+        true
+      } else {
+        false
+      }
+    }
+
+    /*while(!batches.isEmpty){
       val r = batches.poll()
       val elapsed = now - r.tmp
 
-      /*if(elapsed >= TIMEOUT){
+      if(elapsed >= TIMEOUT){
         r.p.success(false)
       } else if(!r.t.keys.exists{keys.contains(_)}) {
         keys = keys ++ r.t.keys
         tasks = tasks :+ r
       } else {
         r.p.success(false)
-      }*/
-
-      tasks = tasks :+ r
-    }
+      }
+    }*/
 
     if(tasks.isEmpty){
       task = scheduler.scheduleOnce(10 milliseconds)(job)
       return
     }
 
-    val b = Batch(UUID.randomUUID.toString, tasks.map(_.t), id)
+    val txs = tasks.map(_.t)
+    val workers = txs.map(_.partitions).flatten.distinct.map(computeWorker(_)).distinct
+    val worker = scala.util.Random.shuffle(workers).head
 
-    logb(b).map { ok =>
+    val b = Batch(UUID.randomUUID.toString, txs, id, workers, worker)
+
+    save(b).flatMap(ok => logb(b).map(_ && ok)).map { ok =>
       if(ok){
         tasks.foreach { r =>
           executing.put(r.t.id, r)
@@ -135,7 +166,9 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     batches.offer(r)
 
     //sender ! true
-    r.p.future.pipeTo(sender)
+    r.p.future.pipeTo(sender).recover { case e =>
+      e.printStackTrace()
+    }
   }
 
   def process(done: BatchDone): Unit = {
@@ -171,7 +204,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
   }
 
   def process(cmd: ReadRequest): Unit = {
-    Future.sequence(cmd.keys.map{read(_)}).map(r => ReadResponse(r))
+    Future.sequence(cmd.keys.map{read(_)}).map(ReadResponse(_))
       .pipeTo(sender)
   }
 

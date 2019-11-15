@@ -45,8 +45,7 @@ message Transaction {
     repeated MVCCVersion ws = 4;
 
     repeated string partitions = 5;
-    string worker = 6;
-    string coordinator = 7;
+    string coordinator = 6;
 }
 
 message Batch {
@@ -56,6 +55,8 @@ message Batch {
     string id = 1;
     repeated Transaction txs = 2;
     string coordinator = 3;
+    repeated string workers = 4;
+    string worker = 5;
 }
 
 message Epoch {
@@ -76,13 +77,27 @@ message BatchDone {
     repeated string committed = 3;
 }
 
+message BatchFinished {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    string id = 1;
+    repeated string txs = 2;
+}
+
+message BatchResponse {
+    option (scalapb.message).extends = "factdb.Command";
+    option (scalapb.message).companion_extends = "factdb.Command";
+
+    string id = 1;
+    bool ok = 2;
+}
+
 message PartitionExecute {
     option (scalapb.message).extends = "factdb.Command";
     option (scalapb.message).companion_extends = "factdb.Command";
 
     string id = 1;
-    repeated Transaction acks = 2;
-    repeated Transaction nacks = 3;
 }
 
 message PartitionRelease {

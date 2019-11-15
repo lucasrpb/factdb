@@ -9,10 +9,16 @@ package object factdb {
 
   val TIMEOUT = 200L
 
+  val PARTITIONS = 1000
+
   val accounts = TrieMap[String, Long]()
 
-  def computeHash(k: String): String = {
-    Server.partitions((scala.util.hashing.byteswap32(k.##).abs % Server.PARTITIONS))
+  def computePartition(k: String): String = {
+    (scala.util.hashing.byteswap32(k.##).abs % PARTITIONS).toString
+  }
+
+  def computeWorker(p: String): String = {
+    Server.workers((scala.util.hashing.byteswap32(p.##).abs % Server.workers.length))
   }
 
   implicit def rsfToScalaFuture[T](rsf: ListenableFuture[T])(implicit ec: ExecutionContext): Future[T] = {
@@ -35,6 +41,8 @@ package object factdb {
     override type T = SameMessage
     override def merge(that: SameMessage): SameMessage = that
   }
+
+  case class Execute(txs: Seq[Transaction]) extends Command
 
   /*case class Executed(epoch: Long, partitions: Seq[String]) extends ReplicatedData {
     override type T = Executed

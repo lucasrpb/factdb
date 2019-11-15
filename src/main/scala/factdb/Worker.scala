@@ -1,16 +1,29 @@
 package factdb
 
-import akka.actor.{Actor, ActorLogging, ActorRef}
+import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicLong, AtomicReference}
+
+import akka.actor.{Actor, ActorLogging, ActorRef, Cancellable}
 import akka.cluster.Cluster
 import akka.cluster.client.ClusterClientReceptionist
+import akka.cluster.ddata.{DistributedData, ORMap, ORMapKey, Replicator}
 import akka.cluster.singleton.{ClusterSingletonProxy, ClusterSingletonProxySettings}
-import com.datastax.driver.core.BatchStatement
+import com.google.protobuf.any.Any
 import factdb.protocol._
+import io.vertx.scala.core.Vertx
+import io.vertx.scala.kafka.client.consumer.{KafkaConsumer, KafkaConsumerRecord}
+import org.apache.kafka.clients.consumer.ConsumerConfig
 
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
+import akka.pattern._
+import akka.util.Timeout
+import com.datastax.driver.core.{HostDistance, PoolingOptions}
 
-class Worker(val id: String) extends Actor with ActorLogging {
+import scala.concurrent.duration._
+
+class Worker(val id: String, val partition: Int) extends Actor with ActorLogging {
 
   implicit val ec: ExecutionContext = context.dispatcher
 
@@ -19,52 +32,124 @@ class Worker(val id: String) extends Actor with ActorLogging {
   implicit val cluster = Cluster(context.system)
   ClusterClientReceptionist(context.system).registerService(self)
 
-  val tasks = TrieMap[String, (Transaction, Seq[String], Seq[String])]()
+  val poolingOptions = new PoolingOptions()
+    //.setConnectionsPerHost(HostDistance.LOCAL, 1, 200)
+    .setMaxRequestsPerConnection(HostDistance.LOCAL, 2000)
+  //.setNewConnectionThreshold(HostDistance.LOCAL, 2000)
+  //.setCoreConnectionsPerHost(HostDistance.LOCAL, 2000)
 
   val ycluster = com.datastax.driver.core.Cluster.builder()
     .addContactPoint("127.0.0.1")
+    .withPoolingOptions(poolingOptions)
     .build()
 
   val session = ycluster.connect("s2")
 
-  val UPDATE_DATA = session.prepare("update data set value=?, version=? where key=?;")
-  val READ_DATA = session.prepare("select * from data where key=? and version=?;")
+  val READ_BATCH = session.prepare("select completed from batches where id=?;")
+  val UPDATE_BATCH = session.prepare("update batches set completed = true where id=?;")
 
-  def readKey(k: String, v: MVCCVersion): Future[Boolean] = {
-    session.executeAsync(READ_DATA.bind.setString(0, k).setString(1, v.version)).map{_.one() != null}
+  val vertx = Vertx.vertx()
+  val config = scala.collection.mutable.Map[String, String]()
+
+  config += (ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
+  config += (ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringDeserializer")
+  config += (ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer")
+  config += (ConsumerConfig.GROUP_ID_CONFIG -> s"worker-${id}")
+  config += (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "latest")
+  config += (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> "false")
+
+  // use consumer for interacting with Apache Kafka
+  val consumer = KafkaConsumer.create[String, Array[Byte]](vertx, config)
+
+  consumer.subscribeFuture("log").onComplete {
+    case Success(result) => {
+      println(s"worker ${id} subscribed!")
+    }
+    case Failure(cause) => cause.printStackTrace()
   }
 
-  def checkTx(t: Transaction): Future[Boolean] = {
-    Future.sequence(t.rs.map{r => readKey(r.k, r)}).map(!_.contains(false))
-  }
+  val batch = new AtomicReference[Option[Batch]](None)
+  val finished = TrieMap[String, String]()
 
-  def write(tasks: Seq[Transaction]): Future[Boolean] = {
-    val wb = new BatchStatement()
+  def handle(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
+    consumer.pause()
 
-    tasks.foreach { t =>
-      t.ws.foreach { v =>
-        wb.add(UPDATE_DATA.bind.setLong(0, v.v).setString(1, v.version).setString(2, v.k))
-      }
+    val b = Any.parseFrom(evt.value()).unpack(Batch)
+
+    batch.set(Some(b))
+
+    if(!b.workers.contains(id)){
+      consumer.commit()
+      consumer.resume()
+      return
     }
 
-    session.executeAsync(wb).map(_.wasApplied())
+    if(b.worker.equals(id)){
+      process()
+      return
+    }
+
+    checkFinished()
   }
 
-  def check(tasks: Seq[Transaction]): Future[Seq[(Transaction, Boolean)]] = {
-    Future.sequence(tasks.map{ t => checkTx(t).map(t -> _)})
+  consumer.handler(handle)
+
+  def checkFinished(): Unit = {
+    val opt = batch.get()
+
+    if(opt.isEmpty) return
+
+    val b = opt.get
+
+    val r = session.execute(READ_BATCH.bind.setString(0, b.id)).one()
+
+    if(r == null){
+      scheduler.scheduleOnce(10 millis)(checkFinished)
+      return
+    }
+
+    if(r.getBool("completed")){
+      consumer.commit()
+      consumer.resume()
+      return
+    }
+
+    scheduler.scheduleOnce(10 millis)(checkFinished)
   }
 
-  val pMap = TrieMap[String, ActorRef]()
+  def process(): Unit = {
+    val opt = batch.get()
 
-  Server.partitions.foreach { p =>
+    if(opt.isEmpty) return
+
+    val b = opt.get
+
+    log.info(s"${Console.RED_B}worker ${id} processing batch ${b.id}${Console.RESET}\n")
+
+    session.executeAsync(UPDATE_BATCH.bind.setString(0, b.id)).map { r =>
+      cMap(b.coordinator) ! BatchDone(id, Seq.empty[String], b.txs.map(_.id))
+
+      b.workers.filterNot(_.equals(id)).foreach { w =>
+        wMap(w) ! BatchFinished(b.id)
+      }
+
+      consumer.commit()
+      consumer.resume()
+    }
+  }
+
+  val rand = ThreadLocalRandom.current()
+  val wMap = TrieMap[String, ActorRef]()
+
+  Server.workers.foreach { w =>
 
     val proxy = context.actorOf(
       ClusterSingletonProxy.props(
-        singletonManagerPath = s"/user/$p",
+        singletonManagerPath = s"/user/$w",
         settings = ClusterSingletonProxySettings(context.system)),
-      name = s"proxy-${p}")
+      name = s"proxy-${w}")
 
-    pMap.put(p, proxy)
+    wMap.put(w, proxy)
   }
 
   val cMap = TrieMap[String, ActorRef]()
@@ -80,102 +165,6 @@ class Worker(val id: String) extends Actor with ActorLogging {
     cMap.put(c, proxy)
   }
 
-  def release(list: Seq[Transaction]): Unit = {
-    var requests = Map.empty[String, Seq[String]]
-
-    list.foreach { t =>
-      t.partitions.foreach { p =>
-        requests.get(p) match {
-          case None => requests = requests + (p -> Seq(t.id))
-          case Some(l) => requests = requests + (p -> (l :+ t.id))
-        }
-      }
-    }
-
-    requests.foreach { case (p, list) =>
-      pMap(p) ! PartitionRelease(p, list)
-    }
-  }
-
-  def sendToCoordinator(aborted: Seq[Transaction], committed: Seq[Transaction]): Unit = {
-    var requests = Map.empty[String, (Seq[String], Seq[String])]
-
-    aborted.foreach { t =>
-      requests.get(t.coordinator) match {
-        case None => requests = requests + (t.coordinator -> (Seq(t.id), Seq.empty[String]))
-        case Some((a, c)) => requests = requests + (t.coordinator -> (a :+ t.id, c))
-      }
-    }
-
-    committed.foreach { t =>
-      requests.get(t.coordinator) match {
-        case None => requests = requests + (t.coordinator -> (Seq.empty[String], Seq(t.id)))
-        case Some((a, c)) => requests = requests + (t.coordinator -> (a, c :+ t.id))
-      }
-    }
-
-    requests.foreach { case (c, r) =>
-      cMap(c) ! BatchDone("", r._1, r._2)
-    }
-  }
-
-  def execute(): Unit = {
-
-    val list = tasks.filter { case (_, (t, acks, nacks)) =>
-      val parts = acks ++ nacks
-      t.partitions.forall(parts.contains(_))
-    }
-
-    if(list.isEmpty) return
-
-    list.foreach { t =>
-      tasks.remove(t._1)
-    }
-
-    val abort = list.filter{!_._2._3.isEmpty}.map(_._2._1).toSeq
-    val commit = list.filter(_._2._3.isEmpty).map(_._2._1).toSeq
-
-    println(s"executing tasks ${commit.map(_.id)}\n")
-    println(s"aborting tasks ${abort.map(_.id)}\n")
-
-    val txs = list.values.map(_._1).toSeq
-
-    /*check(commit).flatMap { reads =>
-      val failures = abort ++ reads.filter(!_._2).map(_._1)
-      val successes = reads.filter(_._2).map(_._1)
-
-      write(successes).map { ok =>
-        release(txs)
-        sendToCoordinator(failures, successes)
-        true
-      }
-    }*/
-
-    release(txs)
-    sendToCoordinator(Seq.empty[Transaction], txs)
-  }
-
-  def process(cmd: PartitionExecute): Unit = {
-
-    cmd.acks.foreach { t =>
-      tasks.get(t.id) match {
-        case None => tasks.put(t.id, (t, Seq(cmd.id), Seq.empty[String]))
-        case Some(e) => tasks.update(t.id, (t, (e._2 :+ cmd.id), e._3))
-      }
-    }
-
-    cmd.nacks.foreach { t =>
-      tasks.get(t.id) match {
-        case None => tasks.put(t.id, (t, Seq.empty[String], Seq(cmd.id)))
-        case Some(e) => tasks.update(t.id, (t, e._2, e._3 :+ cmd.id))
-      }
-    }
-
-    execute()
-
-    sender ! true
-  }
-
   override def preStart(): Unit = {
     println(s"STARTING WORKER $id...\n")
   }
@@ -184,8 +173,17 @@ class Worker(val id: String) extends Actor with ActorLogging {
     println(s"STOPPING WORKER $id...\n")
   }
 
+  def process(cmd: BatchFinished): Unit = {
+    val b = batch.get()
+
+    if(b.isDefined && cmd.id.equals(b.get.id)){
+      consumer.commit()
+      consumer.resume()
+    }
+  }
+
   override def receive: Receive = {
-    case cmd: PartitionExecute => process(cmd)
+    case cmd: BatchFinished => process(cmd)
     case _ =>
   }
 }

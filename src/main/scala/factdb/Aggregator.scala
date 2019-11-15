@@ -2,9 +2,10 @@ package factdb
 
 import java.util.UUID
 
-import akka.actor.{Actor, ActorLogging}
+import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.cluster.Cluster
 import akka.cluster.client.ClusterClientReceptionist
+import akka.cluster.singleton.{ClusterSingletonProxy, ClusterSingletonProxySettings}
 import com.google.protobuf.any.Any
 import factdb.protocol._
 import io.vertx.scala.core.Vertx
@@ -13,6 +14,7 @@ import io.vertx.scala.kafka.client.producer.{KafkaProducer, KafkaProducerRecord}
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 
+import scala.collection.concurrent.TrieMap
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
@@ -56,6 +58,32 @@ class Aggregator() extends Actor with ActorLogging {
   // use producer for interacting with Apache Kafka
   val producer = KafkaProducer.create[String, Array[Byte]](vertx, pconfig)
 
+  val cMap = TrieMap[String, ActorRef]()
+
+  Server.coordinators.foreach { c =>
+
+    val proxy = context.actorOf(
+      ClusterSingletonProxy.props(
+        singletonManagerPath = s"/user/$c",
+        settings = ClusterSingletonProxySettings(context.system)),
+      name = s"proxy-${c}")
+
+    cMap.put(c, proxy)
+  }
+
+  def calculateBatch(remaining: Seq[Transaction]): Seq[Transaction] = {
+    var keys = Seq.empty[String]
+
+    remaining.filter { t =>
+      if(!t.keys.exists(keys.contains(_))){
+        keys = keys ++ t.keys
+        true
+      } else {
+        false
+      }
+    }
+  }
+
   def handle(evts: KafkaConsumerRecords[String, Array[Byte]]): Unit = {
     consumer.pause()
 
@@ -64,15 +92,25 @@ class Aggregator() extends Actor with ActorLogging {
       Any.parseFrom(rec.value()).unpack(Batch)
     }
 
-    val epoch = Epoch(UUID.randomUUID.toString, batches.map(_.txs).flatten.sortBy(_.id))
+    val e = Epoch(UUID.randomUUID.toString, batches.map(_.txs).flatten)
 
-    val buf = Any.pack(epoch).toByteArray
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", epoch.epoch, buf)
+    val buf = Any.pack(e).toByteArray
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", e.epoch, buf)
 
-    producer.writeFuture(record).onComplete { _ =>
-      consumer.commit()
-      consumer.resume()
+    producer.writeFuture(record).onComplete {
+      _ match {
+        case scala.util.Failure(ex) =>
+          ex.printStackTrace()
+          System.exit(1)
+
+        case scala.util.Success(_) =>
+
+          consumer.commit()
+          consumer.resume()
+
+      }
     }
+
   }
 
   consumer.handler(_ => {})
