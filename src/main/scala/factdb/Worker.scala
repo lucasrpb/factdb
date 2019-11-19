@@ -1,5 +1,6 @@
 package factdb
 
+import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicLong, AtomicReference}
 
@@ -11,7 +12,7 @@ import akka.cluster.singleton.{ClusterSingletonProxy, ClusterSingletonProxySetti
 import com.google.protobuf.any.Any
 import factdb.protocol._
 import io.vertx.scala.core.Vertx
-import io.vertx.scala.kafka.client.consumer.{KafkaConsumer, KafkaConsumerRecord}
+import io.vertx.scala.kafka.client.consumer.{KafkaConsumer, KafkaConsumerRecord, KafkaConsumerRecords}
 import org.apache.kafka.clients.consumer.ConsumerConfig
 
 import scala.collection.concurrent.TrieMap
@@ -20,6 +21,7 @@ import scala.util.{Failure, Success}
 import akka.pattern._
 import akka.util.Timeout
 import com.datastax.driver.core.{HostDistance, PoolingOptions}
+import io.vertx.scala.kafka.client.common.TopicPartition
 
 import scala.concurrent.duration._
 
@@ -54,95 +56,24 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
   config += (ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
   config += (ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringDeserializer")
   config += (ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer")
-  config += (ConsumerConfig.GROUP_ID_CONFIG -> s"worker-${id}")
+  config += (ConsumerConfig.GROUP_ID_CONFIG -> s"worker")
   config += (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "latest")
   config += (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> "false")
 
   // use consumer for interacting with Apache Kafka
   val consumer = KafkaConsumer.create[String, Array[Byte]](vertx, config)
 
-  consumer.subscribeFuture("log").onComplete {
+  consumer.subscribeFuture("batches").onComplete {
     case Success(result) => {
       println(s"worker ${id} subscribed!")
     }
     case Failure(cause) => cause.printStackTrace()
   }
 
-  val batch = new AtomicReference[Option[Batch]](None)
-  val finished = TrieMap[String, String]()
-
-  def handle(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
-    consumer.pause()
-
-    val b = Any.parseFrom(evt.value()).unpack(Batch)
-
-    batch.set(Some(b))
-
-    if(!b.workers.contains(id)){
-      consumer.commit()
-      consumer.resume()
-      return
-    }
-
-    if(b.worker.equals(id)){
-      process()
-      return
-    }
-
-    checkFinished()
-  }
-
-  consumer.handler(handle)
-
-  def checkFinished(): Unit = {
-    val opt = batch.get()
-
-    if(opt.isEmpty) return
-
-    val b = opt.get
-
-    val r = session.execute(READ_BATCH.bind.setString(0, b.id)).one()
-
-    if(r == null){
-      scheduler.scheduleOnce(10 millis)(checkFinished)
-      return
-    }
-
-    if(r.getBool("completed")){
-      consumer.commit()
-      consumer.resume()
-      return
-    }
-
-    scheduler.scheduleOnce(10 millis)(checkFinished)
-  }
-
-  def process(): Unit = {
-    val opt = batch.get()
-
-    if(opt.isEmpty) return
-
-    val b = opt.get
-
-    log.info(s"${Console.RED_B}worker ${id} processing batch ${b.id}${Console.RESET}\n")
-
-    session.executeAsync(UPDATE_BATCH.bind.setString(0, b.id)).map { r =>
-      cMap(b.coordinator) ! BatchDone(id, Seq.empty[String], b.txs.map(_.id))
-
-      b.workers.filterNot(_.equals(id)).foreach { w =>
-        wMap(w) ! BatchFinished(b.id)
-      }
-
-      consumer.commit()
-      consumer.resume()
-    }
-  }
-
   val rand = ThreadLocalRandom.current()
   val wMap = TrieMap[String, ActorRef]()
 
   Server.workers.foreach { w =>
-
     val proxy = context.actorOf(
       ClusterSingletonProxy.props(
         singletonManagerPath = s"/user/$w",
@@ -155,7 +86,6 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
   val cMap = TrieMap[String, ActorRef]()
 
   Server.coordinators.foreach { c =>
-
     val proxy = context.actorOf(
       ClusterSingletonProxy.props(
         singletonManagerPath = s"/user/$c",
@@ -165,6 +95,52 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     cMap.put(c, proxy)
   }
 
+  val batches = TrieMap.empty[String, Batch]
+
+  val topicPartition = TopicPartition.apply(new io.vertx.kafka.client.common.TopicPartition().setPartition(partition)
+    .setTopic("batches"))
+
+  //val batch = new AtomicReference[Option[Batch]](None)
+
+  def handle(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
+    /*if(!evt.partition().equals(partition)){
+      consumer.commit()
+      return
+    }*/
+
+    consumer.pause()
+
+    val b = Any.parseFrom(evt.value()).unpack(Batch)
+
+    if(!send(b)){
+
+      consumer.seek(topicPartition, evt.offset())
+      consumer.commit()
+      consumer.resume()
+      return
+    }
+  }
+
+  def send(b: Batch): Boolean = synchronized {
+    if(batches.isDefinedAt(id)){
+      false
+    } else {
+
+      batches.put(id, b)
+
+      Server.workers.filterNot(_.equals(id)).foreach { w =>
+        wMap(w) ! EpochBatch(id, b)
+      }
+
+      true
+    }
+  }
+
+  consumer.handler(handle)
+  //consumer.batchHandler(handle)
+
+  val sent = new AtomicBoolean(false)
+
   override def preStart(): Unit = {
     println(s"STARTING WORKER $id...\n")
   }
@@ -173,17 +149,32 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     println(s"STOPPING WORKER $id...\n")
   }
 
-  def process(cmd: BatchFinished): Unit = {
-    val b = batch.get()
-
-    if(b.isDefined && cmd.id.equals(b.get.id)){
-      consumer.commit()
-      consumer.resume()
-    }
-  }
+  val empty = Batch(UUID.randomUUID.toString, Seq.empty[Transaction], id,
+    Seq.empty[String], scala.util.Random.shuffle(Server.workers).head)
 
   override def receive: Receive = {
-    case cmd: BatchFinished => process(cmd)
+    case b: EpochBatch =>
+
+      batches.putIfAbsent(b.w, b.b)
+
+      val keys = batches.keys.toSeq
+
+      send(empty)
+
+      if(Server.workers.forall(keys.contains(_))){
+
+        val b = batches(id)
+
+        if(!b.txs.isEmpty){
+          println(s"${Console.RED_B}[$id] txs ${b.txs.map(_.id)} batches: ${} ${Console.RESET}\n")
+          cMap(b.coordinator) ! BatchDone(id, Seq.empty[String], b.txs.map(_.id))
+        }
+
+        batches.clear()
+        consumer.commit()
+        consumer.resume()
+      }
+
     case _ =>
   }
 }

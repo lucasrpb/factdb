@@ -63,7 +63,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
   def logb(b: Batch): Future[Boolean] = {
     val buf = Any.pack(b).toByteArray
     val now = System.currentTimeMillis()
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf)
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf)
 
     producer.writeFuture(record).map { _ =>
       true
@@ -77,18 +77,27 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
   var task: Cancellable = null
 
+  def empty(): Unit = {
+    /*logb(Batch(UUID.randomUUID.toString, Seq.empty[Transaction], id,
+      Seq.empty[String], scala.util.Random.shuffle(Server.workers).head)).onComplete { _ =>
+      task = scheduler.scheduleOnce(10 milliseconds)(job)
+    }*/
+
+    task = scheduler.scheduleOnce(10 milliseconds)(job)
+  }
+
   def job(): Unit = {
 
     if(batches.isEmpty){
-      task = scheduler.scheduleOnce(10 milliseconds)(job)
-      return
+      //task = scheduler.scheduleOnce(10 milliseconds)(job)
+      return empty()
     }
 
     val now = System.currentTimeMillis()
     var tasks = Seq.empty[Request]
     var keys = Seq.empty[String]
 
-    val it = batches.iterator()
+    /*val it = batches.iterator()
 
     while(it.hasNext){
       tasks = tasks :+ it.next()
@@ -102,9 +111,9 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
       } else {
         false
       }
-    }
+    }*/
 
-    /*while(!batches.isEmpty){
+    while(!batches.isEmpty){
       val r = batches.poll()
       val elapsed = now - r.tmp
 
@@ -116,11 +125,11 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
       } else {
         r.p.success(false)
       }
-    }*/
+    }
 
     if(tasks.isEmpty){
-      task = scheduler.scheduleOnce(10 milliseconds)(job)
-      return
+      //task = scheduler.scheduleOnce(10 milliseconds)(job)
+      return empty()
     }
 
     val txs = tasks.map(_.t)
@@ -129,7 +138,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
     val b = Batch(UUID.randomUUID.toString, txs, id, workers, worker)
 
-    save(b).flatMap(ok => logb(b).map(_ && ok)).map { ok =>
+    /*save(b).flatMap(ok => logb(b).map(_ && ok))*/logb(b).map { ok =>
       if(ok){
         tasks.foreach { r =>
           executing.put(r.t.id, r)
@@ -148,7 +157,6 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     }.onComplete { _ =>
       task = scheduler.scheduleOnce(10 milliseconds)(job)
     }
-
   }
 
   override def preStart(): Unit = {

@@ -2,107 +2,44 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dd86b2c3-f81f-43e7-99f4-cdd3cff34f6f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$job$13.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$process$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator1$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator2$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$Execute$.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$Execute.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/BatchFinished$.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/BatchFinished$BatchFinishedLens.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/BatchFinished.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/BatchResponse$.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/BatchResponse$BatchResponseLens.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/BatchResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/server.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/BatchFinished.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/BatchResponse.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/scala-2.12/test-classes/factdb/Client$$anonfun$execute$6.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/protobuf/commands.proto" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/protobuf/commands.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.conf" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/server.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/client.conf" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/client.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Aggregator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Aggregator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Aggregator.scala" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Coordinator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Coordinator.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Partition.scala" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Server.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Server.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Worker.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Worker.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/package.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/package.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scala/factdb/Client.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/factdb/Client.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/scala/factdb/MainSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/factdb/MainSpec.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/application.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/client.conf" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/client.conf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$anonfun$receive$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$anonfun$receive$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator3$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator3$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator4$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator4$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$job$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$anonfun$receive$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator3$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator4$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$job$13.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$process$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$process$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$receive$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$receive$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator1$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator1$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator2$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator2$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator2$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator2$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$Request$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$Request$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$Request.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$Request.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Partition$$anonfun$receive$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Partition$$typecreator1$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Partition$$typecreator2$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Partition.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$anonfun$receive$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$anonfun$receive$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator1$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator2$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator2$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$$anon$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$$anon$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$SameMessage$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$SameMessage$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$SameMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$SameMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$Execute$.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$Execute.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch$BatchLens.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch$BatchLens.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/CommandsProto$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/CommandsProto$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/PartitionExecute$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/PartitionExecute$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/PartitionExecute$PartitionExecuteLens.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/PartitionExecute$PartitionExecuteLens.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/PartitionExecute.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/PartitionExecute.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/PartitionRelease$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/PartitionRelease$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/ReadRequest$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/ReadRequest$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/ReadResponse$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/ReadResponse$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Transaction$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Transaction$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Transaction$TransactionLens.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Transaction$TransactionLens.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Transaction.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Transaction.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/factdb_2.12-0.1.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/factdb_2.12-0.1.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/Batch.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/Batch.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/CommandsProto.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/CommandsProto.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/PartitionExecute.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/PartitionExecute.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/PartitionRelease.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/PartitionRelease.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/ReadRequest.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/ReadRequest.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/ReadResponse.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/ReadResponse.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/Transaction.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/Transaction.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/test-classes/factdb/Client$$anonfun$execute$5.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/test-classes/factdb/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/test-classes/factdb/Client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/test-classes/factdb/MainSpec.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/test-classes/factdb/MainSpec.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/compile/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compile/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/copy-resources" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/copy-resources" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/inputs" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/inputs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/protocGenerate/$global/streams/protobuf_2.12/in-cache" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/protocGenerate/$global/streams/protobuf_2.12/in-cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/protocGenerate/$global/streams/protobuf_2.12/out-cache" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/protocGenerate/$global/streams/protobuf_2.12/out-cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/test/compileIncSetup/$global/streams/inc_compile_2.12.zip" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/compileIncSetup/$global/streams/inc_compile_2.12.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/test/compileIncremental/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/compileIncremental/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/test/definedTests/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/definedTests/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/test/$global/streams/succeeded_tests" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/test/$global/streams/succeeded_tests" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/test/testOnly/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/testOnly/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/testOnly/isModule=false name=factdb.MainSpec/test/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/testOnly/isModule=false name=factdb.MainSpec/test/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-reports/TEST-factdb.MainSpec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-reports/TEST-factdb.MainSpec.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-reports/factdb.MainSpec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-reports/factdb.MainSpec.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -131,7 +68,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="v0.2" />
+        <entry key="$PROJECT_DIR$" value="v0.3" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -234,7 +171,11 @@
       <workItem from="1573474249865" duration="8220000" />
       <workItem from="1573695255542" duration="1743000" />
       <workItem from="1573735146690" duration="6635000" />
-      <workItem from="1573759332558" duration="799000" />
+      <workItem from="1573759332558" duration="1706000" />
+      <workItem from="1573943092321" duration="7888000" />
+      <workItem from="1573995587345" duration="7066000" />
+      <workItem from="1574041833087" duration="5815000" />
+      <workItem from="1574099256894" duration="20072000" />
     </task>
     <task id="LOCAL-00001" summary="Singleton services tested.">
       <created>1572576165730</created>
@@ -278,7 +219,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573133797911</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Execution protocol experimentation.">
+      <created>1573781358836</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1573781358836</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -303,6 +251,7 @@
     <MESSAGE value="Singleton services tested." />
     <MESSAGE value="Distributed data tested." />
     <MESSAGE value="Gossip based transactional protocol." />
-    <option name="LAST_COMMIT_MESSAGE" value="Gossip based transactional protocol." />
+    <MESSAGE value="Execution protocol experimentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Execution protocol experimentation." />
   </component>
 </project>

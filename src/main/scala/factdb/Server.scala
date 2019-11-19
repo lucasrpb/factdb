@@ -5,6 +5,7 @@ import java.util.UUID
 import akka.actor.{ActorRef, ActorSystem, PoisonPill, Props}
 import akka.cluster.singleton.{ClusterSingletonManager, ClusterSingletonManagerSettings}
 import com.typesafe.config.ConfigFactory
+import io.vertx.core.{AsyncResult, Handler}
 import io.vertx.scala.core.Vertx
 import io.vertx.scala.kafka.admin.AdminUtils
 
@@ -17,7 +18,8 @@ object Server {
 
   val n = 3
 
-  val coordinators = Seq("c1", "c2", "c3")
+  val coordinators = Seq("c0", "c1", "c2")
+  //val partitions = Seq("p0", "p1", "p2")
   val workers = Seq("w0", "w1", "w2")
 
   /*val pMap = TrieMap[String, ActorRef]()
@@ -39,10 +41,10 @@ object Server {
 
         println(s"topic log deleted: ${r.succeeded()}")
 
-        admin.createTopic("batches", workers.length, 1, r => {
+        admin.createTopic("batches", workers.length, 1, (event: AsyncResult[Unit]) => {
           println(s"topic batches created: ${r.succeeded()}")
 
-          admin.createTopic("log", 1, 1, r => {
+          admin.createTopic("log", 1, 1, (e: AsyncResult[Unit]) => {
             println(s"topic log created: ${r.succeeded()}")
 
             admin.close(r => p.success(true))

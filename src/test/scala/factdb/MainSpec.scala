@@ -45,7 +45,7 @@ class MainSpec extends FlatSpec {
 
     implicit val ec = system.dispatcher
 
-    val n = 2000
+    val n = 1000
     var tasks = Seq.empty[Future[Boolean]]
 
     var clients = Seq.empty[Client]

@@ -7,7 +7,7 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 
 package object factdb {
 
-  val TIMEOUT = 200L
+  val TIMEOUT = 1000L
 
   val PARTITIONS = 1000
 
@@ -42,7 +42,7 @@ package object factdb {
     override def merge(that: SameMessage): SameMessage = that
   }
 
-  case class Execute(txs: Seq[Transaction]) extends Command
+  case class EpochBatch(w: String, b: Batch)
 
   /*case class Executed(epoch: Long, partitions: Seq[String]) extends ReplicatedData {
     override type T = Executed
@@ -53,7 +53,7 @@ package object factdb {
 
       Executed(epoch, partitions ++ that.partitions)
     }
-  }
+  }*/
 
   case class Epoch(epoch: Long, batches: Map[String, Option[Batch]]) extends ReplicatedData {
     override type T = Epoch
@@ -65,5 +65,5 @@ package object factdb {
       Epoch(epoch, batches ++ that.batches)
     }
   }
-*/
+
 }
