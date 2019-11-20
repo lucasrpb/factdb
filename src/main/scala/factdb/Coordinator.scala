@@ -65,7 +65,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     val now = System.currentTimeMillis()
     val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf)
 
-    producer.writeFuture(record).map { _ =>
+    producer.writeFuture(record).map { m =>
       true
     }
   }
@@ -77,7 +77,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
   var task: Cancellable = null
 
-  def job(): Unit = {
+  def job(): Unit = synchronized {
 
     if(batches.isEmpty){
       task = scheduler.scheduleOnce(10 milliseconds)(job)
@@ -129,7 +129,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
     val b = Batch(UUID.randomUUID.toString, txs, id, workers, worker)
 
-    save(b).flatMap(ok => logb(b).map(_ && ok)).map { ok =>
+    /*save(b).flatMap(ok => logb(b).map(_ && ok))*/logb(b).map { ok =>
       if(ok){
         tasks.foreach { r =>
           executing.put(r.t.id, r)

@@ -68,76 +68,6 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     case Failure(cause) => cause.printStackTrace()
   }
 
-  val batch = new AtomicReference[Option[Batch]](None)
-  val finished = TrieMap[String, String]()
-
-  def handle(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
-    consumer.pause()
-
-    val b = Any.parseFrom(evt.value()).unpack(Batch)
-
-    batch.set(Some(b))
-
-    if(!b.workers.contains(id)){
-      consumer.commit()
-      consumer.resume()
-      return
-    }
-
-    if(b.worker.equals(id)){
-      process()
-      return
-    }
-
-    checkFinished()
-  }
-
-  consumer.handler(handle)
-
-  def checkFinished(): Unit = {
-    val opt = batch.get()
-
-    if(opt.isEmpty) return
-
-    val b = opt.get
-
-    val r = session.execute(READ_BATCH.bind.setString(0, b.id)).one()
-
-    if(r == null){
-      scheduler.scheduleOnce(10 millis)(checkFinished)
-      return
-    }
-
-    if(r.getBool("completed")){
-      consumer.commit()
-      consumer.resume()
-      return
-    }
-
-    scheduler.scheduleOnce(10 millis)(checkFinished)
-  }
-
-  def process(): Unit = {
-    val opt = batch.get()
-
-    if(opt.isEmpty) return
-
-    val b = opt.get
-
-    log.info(s"${Console.RED_B}worker ${id} processing batch ${b.id}${Console.RESET}\n")
-
-    session.executeAsync(UPDATE_BATCH.bind.setString(0, b.id)).map { r =>
-      cMap(b.coordinator) ! BatchDone(id, Seq.empty[String], b.txs.map(_.id))
-
-      b.workers.filterNot(_.equals(id)).foreach { w =>
-        wMap(w) ! BatchFinished(b.id)
-      }
-
-      consumer.commit()
-      consumer.resume()
-    }
-  }
-
   val rand = ThreadLocalRandom.current()
   val wMap = TrieMap[String, ActorRef]()
 
@@ -165,6 +95,28 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     cMap.put(c, proxy)
   }
 
+  val batch = new AtomicReference[Option[Batch]](None)
+  val finished = TrieMap[String, String]()
+
+  def handle(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
+    consumer.pause()
+
+    val b = Any.parseFrom(evt.value()).unpack(Batch)
+
+    if(b.worker.equals(id)){
+      consumer.commit()
+      consumer.resume()
+      return
+    }
+
+    cMap(b.coordinator) ! BatchDone(id, Seq.empty[String], b.txs.map(_.id))
+
+    consumer.commit()
+    consumer.resume()
+  }
+
+  consumer.handler(handle)
+
   override def preStart(): Unit = {
     println(s"STARTING WORKER $id...\n")
   }
@@ -173,17 +125,7 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     println(s"STOPPING WORKER $id...\n")
   }
 
-  def process(cmd: BatchFinished): Unit = {
-    val b = batch.get()
-
-    if(b.isDefined && cmd.id.equals(b.get.id)){
-      consumer.commit()
-      consumer.resume()
-    }
-  }
-
   override def receive: Receive = {
-    case cmd: BatchFinished => process(cmd)
     case _ =>
   }
 }

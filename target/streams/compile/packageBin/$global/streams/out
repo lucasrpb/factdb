@@ -52,8 +52,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Aggregator$$typecreator1$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Epoch.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Epoch.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$anonfun$job$13.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$$anonfun$job$13.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$Request$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$Request$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\BatchFinished$.class[0m
@@ -112,6 +110,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Worker$$typecreator1$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$typecreator2$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$$typecreator2$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$anonfun$job$11.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$$anonfun$job$11.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Ack.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Ack.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\Ack$.class[0m

@@ -36,8 +36,8 @@ class MainSpec extends FlatSpec {
 
     val tb = session.execute("select sum(value) as total from data;").one.getLong("total")
 
-    val system = ActorSystem("client", ConfigFactory.load("client.conf"))
-      
+    val system = ActorSystem("factdb", ConfigFactory.load("client.conf"))
+
     val initialContacts = Set(
       ActorPath.fromString("akka.tcp://factdb@127.0.0.1:2551/system/receptionist"),
       ActorPath.fromString("akka.tcp://factdb@127.0.0.1:2552/system/receptionist"))
@@ -102,6 +102,7 @@ class MainSpec extends FlatSpec {
     clients.foreach(_.stop())
 
     Await.ready(system.terminate(), Duration.Inf)
+
   }
 
 }
