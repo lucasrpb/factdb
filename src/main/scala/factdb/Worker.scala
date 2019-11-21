@@ -25,7 +25,7 @@ import scala.concurrent.duration._
 
 class Worker(val id: String, val partition: Int) extends Actor with ActorLogging {
 
-  implicit val ec: ExecutionContext = context.dispatcher
+  implicit val executionContext = context.system.dispatchers.lookup("my-dispatcher")
 
   val scheduler = context.system.scheduler
 
@@ -99,26 +99,18 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
   //val finished = TrieMap[String, String]()
 
   def handle(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
-    consumer.pause()
+    //consumer.pause()
 
     val b = Any.parseFrom(evt.value()).unpack(Batch)
 
     if(!b.workers.contains(id)){
+      batch.set(null)
       consumer.commit()
-      consumer.resume()
+      //consumer.resume()
       return
     }
 
     batch.set(b)
-
-    /*if(b.worker.equals(id)){
-      process()
-      return
-    }
-
-    log.info(s"${Console.GREEN_B}worker ${id} waiting for batch ${b.id} to finish${Console.RESET}\n")
-
-    checkFinished()*/
 
     if(b.worker.equals(id)){
       process()
@@ -143,7 +135,7 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
       if(one.getBool("completed")) {
         batch.set(null)
         consumer.commit()
-        consumer.resume()
+        //consumer.resume()
       } else {
         scheduler.scheduleOnce(10 millis)(checkFinished)
       }
@@ -152,12 +144,14 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     }
   }
 
-  def process(): Unit = {
+  def process(): Unit = synchronized {
     val b = batch.get()
 
     log.info(s"${Console.RED_B}worker ${id} processing batch ${b.id}${Console.RESET}\n")
 
     session.executeAsync(UPDATE_BATCH.bind.setString(0, b.id)).map { r =>
+
+      log.info(s"batch has finished ${b.id}\n")
 
       cMap(b.coordinator) ! BatchDone(id, Seq.empty[String], b.txs.map(_.id))
 
@@ -166,7 +160,7 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
       }
 
       consumer.commit()
-      consumer.resume()
+      //consumer.resume()
 
     }.recover { case ex =>
       ex.printStackTrace()
@@ -181,10 +175,13 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     println(s"STOPPING WORKER $id...\n")
   }
 
-  def process(cmd: BatchFinished): Unit = {
+  def process(cmd: BatchFinished): Unit = synchronized {
     val b = batch.get()
 
+    log.info(s"received finished ${cmd.id}\n")
+
     if(b != null && cmd.id.equals(b.id)){
+      batch.set(null)
       consumer.commit()
       consumer.resume()
     }
