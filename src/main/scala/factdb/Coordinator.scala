@@ -67,6 +67,9 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
     producer.writeFuture(record).map { m =>
       true
+    }.recover { case ex =>
+      ex.printStackTrace()
+      false
     }
   }
 
@@ -129,8 +132,11 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
     val b = Batch(UUID.randomUUID.toString, txs, id, workers, worker)
 
-    /*save(b).flatMap(ok => logb(b).map(_ && ok))*/logb(b).map { ok =>
+    save(b).flatMap(ok => logb(b).map(_ && ok)).map { ok =>
       if(ok){
+
+        //println(s"${Console.YELLOW_B}saved batch ${b.id}${Console.RESET}\n")
+
         tasks.foreach { r =>
           executing.put(r.t.id, r)
         }
