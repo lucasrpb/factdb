@@ -19,7 +19,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 import akka.pattern._
 import akka.util.Timeout
-import com.datastax.driver.core.{HostDistance, PoolingOptions}
+import com.datastax.driver.core.{BatchStatement, HostDistance, PoolingOptions}
+import collection.JavaConverters._
 
 import scala.concurrent.duration._
 
@@ -45,8 +46,94 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
 
   val session = ycluster.connect("s2")
 
-  val READ_BATCH = session.prepare("select completed from batches where id=?;")
+  val READ_BATCH = session.prepare("select * from batches where id=?;")
   val UPDATE_BATCH = session.prepare("update batches set completed = true where id=?;")
+  val ADD_VOTE = session.prepare("update batches set votes = votes + 1 where id=?;")
+
+  val UPDATE_DATA = session.prepare("update data set value=?, version=? where key=?;")
+  val READ_DATA = session.prepare("select * from data where key=? and version=?;")
+
+  def readKey(k: String, v: MVCCVersion): Future[Boolean] = {
+    session.executeAsync(READ_DATA.bind.setString(0, k).setString(1, v.version)).map{_.one() != null}
+  }
+
+  def writeKey(k: String, v: MVCCVersion): Future[Boolean] = {
+    session.executeAsync(UPDATE_DATA.bind.setLong(0, v.v).setString(1, v.version).setString(2, k)).map{_.wasApplied()}
+  }
+
+  def checkTx(t: Transaction): Future[Boolean] = {
+    Future.sequence(t.rs.map{r => readKey(r.k, r)}).map(!_.contains(false))
+  }
+
+  def write(t: Transaction): Future[Boolean] = {
+    val wb = new BatchStatement()
+
+    t.ws.foreach { x =>
+      val k = x.k
+      val v = x.v
+      val version = x.version
+
+      wb.add(UPDATE_DATA.bind.setLong(0, v).setString(1, version).setString(2, k))
+    }
+
+    session.executeAsync(wb).map(_.wasApplied()).recover { case e =>
+      e.printStackTrace()
+      false
+    }
+  }
+
+  def write(txs: Seq[Transaction]): Future[Boolean] = {
+    val wb = new BatchStatement()
+
+    wb.clear()
+
+    txs.foreach { t =>
+      t.ws.foreach { x =>
+        val k = x.k
+        val v = x.v
+        val version = x.version
+
+        wb.add(UPDATE_DATA.bind.setLong(0, v).setString(1, version).setString(2, k))
+      }
+    }
+
+    session.executeAsync(wb).map(_.wasApplied()).recover { case e =>
+      e.printStackTrace()
+      false
+    }
+  }
+
+  def check(txs: Seq[Transaction]): Future[Seq[(Transaction, Boolean)]] = {
+    Future.sequence(txs.map{t => checkTx(t).map(t -> _)})
+  }
+
+  def updateBatch(id: String): Future[Boolean] = {
+    session.executeAsync(UPDATE_BATCH.bind.setString(0, id)).map(_.wasApplied())
+  }
+
+  def execute(b: Batch): Future[Boolean] = {
+    check(b.txs).flatMap { reads =>
+      val conflicted = reads.filter(_._2 == false).map(_._1.id)
+      val applied = reads.filter(_._2 == true).map(_._1)
+
+      write(applied).flatMap { _ =>
+        updateBatch(b.id).map { _ =>
+
+          cMap(b.coordinator) ! BatchDone(id, conflicted, applied.map(_.id))
+
+          b.workers.filterNot(_.equals(id)).map { w =>
+            wMap(w) ! BatchFinished(b.id)
+          }
+
+          consumer.commit()
+          consumer.resume()
+
+          true
+        }
+      }
+    }
+
+  }
 
   val vertx = Vertx.vertx()
   val config = scala.collection.mutable.Map[String, String]()
@@ -95,77 +182,46 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     cMap.put(c, proxy)
   }
 
-  val batch = new AtomicReference[Batch](null)
-  //val finished = TrieMap[String, String]()
+  var b: Batch = null
 
   def handle(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
-    //consumer.pause()
+    consumer.pause()
 
-    val b = Any.parseFrom(evt.value()).unpack(Batch)
-
-    if(!b.workers.contains(id)){
-      batch.set(null)
-      consumer.commit()
-      //consumer.resume()
-      return
-    }
-
-    batch.set(b)
+    b = Any.parseFrom(evt.value()).unpack(Batch)
 
     if(b.worker.equals(id)){
-      process()
-      return
+      execute(b)
     }
 
-    checkFinished()
+    if(!b.workers.contains(id)){
+      consumer.commit()
+      consumer.resume()
+    }
   }
 
   consumer.handler(handle)
 
-  def checkFinished(): Unit = synchronized {
-    val b = batch.get()
+  /*def check(b: Batch): Unit = {
+    scheduler.scheduleOnce(10 millis){
+      session.executeAsync(READ_BATCH.bind.setString(0, b.id)).map { r =>
+        val one = r.one()
 
-    if(b == null) return
-
-    session.executeAsync(READ_BATCH.bind.setString(0, b.id)).map { r =>
-      val one = r.one()
-
-      println(s"result for batch ${b.id} completed ${one.getBool("completed")}...\n")
-
-      if(one.getBool("completed")) {
-        batch.set(null)
-        consumer.commit()
-        //consumer.resume()
-      } else {
-        scheduler.scheduleOnce(10 millis)(checkFinished)
+        if(one.getInt("votes") == b.workers.length){
+          execute(b)
+        } else {
+          check(b)
+        }
       }
-    }.recover { case ex =>
-      ex.printStackTrace()
     }
   }
 
-  def process(): Unit = synchronized {
-    val b = batch.get()
-
-    log.info(s"${Console.RED_B}worker ${id} processing batch ${b.id}${Console.RESET}\n")
-
-    session.executeAsync(UPDATE_BATCH.bind.setString(0, b.id)).map { r =>
-
-      log.info(s"batch has finished ${b.id}\n")
-
-      cMap(b.coordinator) ! BatchDone(id, Seq.empty[String], b.txs.map(_.id))
-
-      b.workers.filterNot(_.equals(id)).foreach { w =>
-        wMap(w) ! BatchFinished(b.id)
+  def vote(b: Batch): Unit = {
+    session.executeAsync(ADD_VOTE.bind.setString(0, b.id)).map { _ =>
+      if(b.worker.equals(id)){
+        check(b)
       }
-
-      consumer.commit()
-      //consumer.resume()
-
-    }.recover { case ex =>
-      ex.printStackTrace()
     }
-  }
+  }*/
 
   override def preStart(): Unit = {
     println(s"STARTING WORKER $id...\n")
@@ -175,16 +231,11 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     println(s"STOPPING WORKER $id...\n")
   }
 
-  def process(cmd: BatchFinished): Unit = synchronized {
-    val b = batch.get()
-
-    log.info(s"received finished ${cmd.id}\n")
-
-    if(b != null && cmd.id.equals(b.id)){
-      batch.set(null)
+  def process(cmd: BatchFinished): Unit = {
+    //if(b.id.equals(cmd.id)){
       consumer.commit()
       consumer.resume()
-    }
+    //}
   }
 
   override def receive: Receive = {

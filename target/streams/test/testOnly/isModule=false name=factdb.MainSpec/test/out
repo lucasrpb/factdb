@@ -1,15 +1,4 @@
 [0m[[0m[0minfo[0m] [0m[0m[32mMainSpec:[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[32mamount of money[0m[0m
 [0m[[0m[0minfo[0m] [0m[0m[31m- should be equal after transactions *** FAILED ***[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  akka.ConfigurationException: ActorSystem [akka://client] needs to have 'akka.actor.provider' set to 'cluster' in the configuration, currently uses [akka.remote.RemoteActorRefProvider][0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.cluster.Cluster.<init>(Cluster.scala:80)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.cluster.Cluster$.createExtension(Cluster.scala:39)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.cluster.Cluster$.createExtension(Cluster.scala:34)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.actor.ActorSystemImpl.registerExtension(ActorSystem.scala:1006)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.actor.ExtensionId.apply(Extension.scala:79)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.actor.ExtensionId.apply$(Extension.scala:78)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.cluster.Cluster$.apply(Cluster.scala:34)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.cluster.client.ClusterClientReceptionist.isTerminated(ClusterClient.scala:553)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.cluster.client.ClusterClientReceptionist.<init>(ClusterClient.scala:595)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  at akka.cluster.client.ClusterClientReceptionist$.createExtension(ClusterClient.scala:533)[0m[0m
-[0m[[0m[0minfo[0m] [0m[0m[31m  ...[0m[0m
+[0m[[0m[0minfo[0m] [0m[0m[31m  469790 did not equal 475321 (MainSpec.scala:100)[0m[0m

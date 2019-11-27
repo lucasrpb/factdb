@@ -7,7 +7,7 @@
 		revision="0.1"
 		conf="runtime-internal"
 		confs="compile, runtime, test, provided, optional, protobuf, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
-		date="20191102110248"/>
+		date="20191121012525"/>
 	<dependencies>
 		<module organisation="com.typesafe.akka" name="akka-distributed-data_2.12">
 			<revision name="2.5.26" status="release" pubdate="20191017084830" resolver="sbt-chain" artresolver="sbt-chain" homepage="https://akka.io/" extra-info.apiURL="https://doc.akka.io/api/akka/2.5.26" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="82">
@@ -733,7 +733,7 @@
 				<metadata-artifact status="no" details="" size="19270" time="0" location="D:\Users\lucas\.ivy2\cache\com.fasterxml.jackson.core\jackson-databind\ivy-2.9.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.0/jackson-databind-2.9.0.pom"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="2.9.0" rev-constraint-default="2.9.0" rev-constraint-dynamic="2.9.0" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="jackson-databind" type="bundle" ext="jar" status="successful" details="" size="1328192" time="1111" location="D:\Users\lucas\.ivy2\cache\com.fasterxml.jackson.core\jackson-databind\bundles\jackson-databind-2.9.0.jar">
+					<artifact name="jackson-databind" type="bundle" ext="jar" status="no" details="" size="1328192" time="0" location="D:\Users\lucas\.ivy2\cache\com.fasterxml.jackson.core\jackson-databind\bundles\jackson-databind-2.9.0.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.9.0/jackson-databind-2.9.0.jar"/>
 					</artifact>
 				</artifacts>
@@ -758,7 +758,7 @@
 				<caller organisation="com.fasterxml.jackson.core" name="jackson-databind" conf="compile, runtime" rev="2.9.0" rev-constraint-default="2.9.0" rev-constraint-dynamic="2.9.0" callerrev="2.9.0"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="2.9.0" rev-constraint-default="2.9.0" rev-constraint-dynamic="2.9.0" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="jackson-core" type="bundle" ext="jar" status="successful" details="" size="320134" time="969" location="D:\Users\lucas\.ivy2\cache\com.fasterxml.jackson.core\jackson-core\bundles\jackson-core-2.9.0.jar">
+					<artifact name="jackson-core" type="bundle" ext="jar" status="no" details="" size="320134" time="0" location="D:\Users\lucas\.ivy2\cache\com.fasterxml.jackson.core\jackson-core\bundles\jackson-core-2.9.0.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.0/jackson-core-2.9.0.jar"/>
 					</artifact>
 				</artifacts>
@@ -794,7 +794,7 @@
 				<metadata-artifact status="no" details="" size="17238" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec-http2\ivy-4.1.15.Final.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.15.Final/netty-codec-http2-4.1.15.Final.pom"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="netty-codec-http2" type="jar" ext="jar" status="successful" details="" size="399678" time="1214" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec-http2\jars\netty-codec-http2-4.1.15.Final.jar">
+					<artifact name="netty-codec-http2" type="jar" ext="jar" status="no" details="" size="399678" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec-http2\jars\netty-codec-http2-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.15.Final/netty-codec-http2-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -806,7 +806,7 @@
 				<metadata-artifact status="no" details="" size="17416" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-handler-proxy\ivy-4.1.15.Final.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.15.Final/netty-handler-proxy-4.1.15.Final.pom"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="netty-handler-proxy" type="jar" ext="jar" status="successful" details="" size="20927" time="3850" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-handler-proxy\jars\netty-handler-proxy-4.1.15.Final.jar">
+					<artifact name="netty-handler-proxy" type="jar" ext="jar" status="no" details="" size="20927" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-handler-proxy\jars\netty-handler-proxy-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.15.Final/netty-handler-proxy-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -820,7 +820,7 @@
 				<caller organisation="io.netty" name="netty-handler-proxy" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="netty-codec-http" type="jar" ext="jar" status="successful" details="" size="547954" time="4378" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec-http\jars\netty-codec-http-4.1.15.Final.jar">
+					<artifact name="netty-codec-http" type="jar" ext="jar" status="no" details="" size="547954" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec-http\jars\netty-codec-http-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.15.Final/netty-codec-http-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -832,7 +832,7 @@
 				<metadata-artifact status="no" details="" size="16730" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec-socks\ivy-4.1.15.Final.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.15.Final/netty-codec-socks-4.1.15.Final.pom"/>
 				<caller organisation="io.netty" name="netty-handler-proxy" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<artifacts>
-					<artifact name="netty-codec-socks" type="jar" ext="jar" status="successful" details="" size="119336" time="957" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec-socks\jars\netty-codec-socks-4.1.15.Final.jar">
+					<artifact name="netty-codec-socks" type="jar" ext="jar" status="no" details="" size="119336" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec-socks\jars\netty-codec-socks-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.15.Final/netty-codec-socks-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -846,7 +846,7 @@
 				<caller organisation="io.netty" name="netty-codec-http2" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="netty-handler" type="jar" ext="jar" status="successful" details="" size="373184" time="4393" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-handler\jars\netty-handler-4.1.15.Final.jar">
+					<artifact name="netty-handler" type="jar" ext="jar" status="no" details="" size="373184" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-handler\jars\netty-handler-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-handler/4.1.15.Final/netty-handler-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -867,7 +867,7 @@
 				<caller organisation="io.netty" name="netty-handler" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<caller organisation="io.netty" name="netty-codec-dns" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<artifacts>
-					<artifact name="netty-codec" type="jar" ext="jar" status="successful" details="" size="311697" time="964" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec\jars\netty-codec-4.1.15.Final.jar">
+					<artifact name="netty-codec" type="jar" ext="jar" status="no" details="" size="311697" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-codec\jars\netty-codec-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-codec/4.1.15.Final/netty-codec-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -895,7 +895,7 @@
 				<caller organisation="io.netty" name="netty-handler-proxy" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="netty-transport" type="jar" ext="jar" status="successful" details="" size="447682" time="4413" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-transport\jars\netty-transport-4.1.15.Final.jar">
+					<artifact name="netty-transport" type="jar" ext="jar" status="no" details="" size="447682" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-transport\jars\netty-transport-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-transport/4.1.15.Final/netty-transport-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -909,7 +909,7 @@
 				<caller organisation="io.netty" name="netty-transport" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="netty-resolver" type="jar" ext="jar" status="successful" details="" size="32235" time="1087" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-resolver\jars\netty-resolver-4.1.15.Final.jar">
+					<artifact name="netty-resolver" type="jar" ext="jar" status="no" details="" size="32235" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-resolver\jars\netty-resolver-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-resolver/4.1.15.Final/netty-resolver-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -923,7 +923,7 @@
 				<caller organisation="io.netty" name="netty-handler" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="netty-buffer" type="jar" ext="jar" status="successful" details="" size="270142" time="4386" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-buffer\jars\netty-buffer-4.1.15.Final.jar">
+					<artifact name="netty-buffer" type="jar" ext="jar" status="no" details="" size="270142" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-buffer\jars\netty-buffer-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.15.Final/netty-buffer-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>
@@ -937,7 +937,7 @@
 				<caller organisation="io.netty" name="netty-buffer" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="4.1.15.Final"/>
 				<caller organisation="io.vertx" name="vertx-core" conf="compile, runtime" rev="4.1.15.Final" rev-constraint-default="4.1.15.Final" rev-constraint-dynamic="4.1.15.Final" callerrev="3.5.0"/>
 				<artifacts>
-					<artifact name="netty-common" type="jar" ext="jar" status="successful" details="" size="559929" time="4408" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-common\jars\netty-common-4.1.15.Final.jar">
+					<artifact name="netty-common" type="jar" ext="jar" status="no" details="" size="559929" time="0" location="D:\Users\lucas\.ivy2\cache\io.netty\netty-common\jars\netty-common-4.1.15.Final.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/io/netty/netty-common/4.1.15.Final/netty-common-4.1.15.Final.jar"/>
 					</artifact>
 				</artifacts>

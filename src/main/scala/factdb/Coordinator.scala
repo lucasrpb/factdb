@@ -41,7 +41,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
   val session = ycluster.connect("s2")
 
   val READ = session.prepare("select * from data where key=?;")
-  val INSERT_BATCH = session.prepare("insert into batches(id, completed) values(?,false);")
+  val INSERT_BATCH = session.prepare("insert into batches(id, completed, votes) values(?,false,0);")
 
   val config = scala.collection.mutable.Map[String, String]()
   config += (ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")

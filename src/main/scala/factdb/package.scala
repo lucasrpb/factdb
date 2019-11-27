@@ -7,7 +7,7 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 
 package object factdb {
 
-  val TIMEOUT = 200L
+  val TIMEOUT = 1000L
 
   val PARTITIONS = 1000
 
