@@ -34,6 +34,14 @@ class Scheduler() extends Actor with ActorLogging {
   config += (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "latest")
   config += (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> "false")
 
+  config += (ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG -> "20")
+  config += (ConsumerConfig.FETCH_MAX_BYTES_CONFIG -> "4000000")
+  
+  /*config += (ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG -> "20")
+  config += (ConsumerConfig.MAX_POLL_RECORDS_CONFIG -> "1000")
+  config += (ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG -> "")*/
+
+
   // use consumer for interacting with Apache Kafka
   val consumer = KafkaConsumer.create[String, Array[Byte]](vertx, config)
 
