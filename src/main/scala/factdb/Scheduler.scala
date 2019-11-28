@@ -26,6 +26,7 @@ class Scheduler() extends Actor with ActorLogging {
   val vertx = Vertx.vertx()
   val config = scala.collection.mutable.Map[String, String]()
 
+
   config += (ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
   config += (ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringDeserializer")
   config += (ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer")
