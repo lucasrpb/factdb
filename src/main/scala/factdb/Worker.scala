@@ -111,7 +111,7 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     session.executeAsync(UPDATE_BATCH.bind.setString(0, id)).map(_.wasApplied())
   }
 
-  def execute(b: Batch): Future[Boolean] = {
+  /*def execute(b: Batch): Future[Boolean] = {
     check(b.txs).flatMap { reads =>
       val conflicted = reads.filter(_._2 == false).map(_._1.id)
       val applied = reads.filter(_._2 == true).map(_._1)
@@ -133,6 +133,18 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
       }
     }
 
+  }*/
+
+  def execute(b: Batch): Future[Boolean] = {
+    check(b.txs).flatMap { reads =>
+      val conflicted = reads.filter(_._2 == false).map(_._1.id)
+      val applied = reads.filter(_._2 == true).map(_._1)
+
+      write(applied).map { _ =>
+        cMap(b.coordinator) ! BatchDone(id, conflicted, applied.map(_.id))
+        true
+      }
+    }
   }
 
   val vertx = Vertx.vertx()
@@ -148,12 +160,12 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
   // use consumer for interacting with Apache Kafka
   val consumer = KafkaConsumer.create[String, Array[Byte]](vertx, config)
 
-  consumer.subscribeFuture("log").onComplete {
+  /*consumer.subscribeFuture("log").onComplete {
     case Success(result) => {
       println(s"worker ${id} subscribed!")
     }
     case Failure(cause) => cause.printStackTrace()
-  }
+  }*/
 
   val rand = ThreadLocalRandom.current()
   val wMap = TrieMap[String, ActorRef]()
@@ -189,17 +201,19 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
 
     b = Any.parseFrom(evt.value()).unpack(Batch)
 
-    if(b.worker.equals(id)){
+    /*if(b.worker.equals(id)){
       execute(b)
     }
 
     if(!b.workers.contains(id)){
       consumer.commit()
       consumer.resume()
-    }
+    }*/
+
+    execute(b)
   }
 
-  consumer.handler(handle)
+ // consumer.handler(handle)
 
   /*def check(b: Batch): Unit = {
     scheduler.scheduleOnce(10 millis){
@@ -238,8 +252,23 @@ class Worker(val id: String, val partition: Int) extends Actor with ActorLogging
     //}
   }
 
+  val sc = context.actorOf(
+    ClusterSingletonProxy.props(
+      singletonManagerPath = s"/user/scheduler",
+      settings = ClusterSingletonProxySettings(context.system)),
+    name = s"proxy-scheduler")
+
+  def process(batch: Batch): Unit = {
+    execute(batch).map { _ =>
+       //sc ! BatchFinished(batch.id)
+
+      BatchFinished(batch.id)
+    }.pipeTo(sender)
+  }
+
   override def receive: Receive = {
-    case cmd: BatchFinished => process(cmd)
+    //case cmd: BatchFinished => process(cmd)
+    case cmd: Batch => process(cmd)
     case _ =>
   }
 }

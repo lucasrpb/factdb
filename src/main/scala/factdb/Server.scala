@@ -18,8 +18,8 @@ object Server {
 
   val n = 3
 
-  val coordinators = Seq("c0", "c1", "c2")
-  val workers = Seq("w0", "w1", "w2")
+  val coordinators = Seq("c0", "c1", "c2", "c3")
+  val workers = Seq("w0", "w1", "w2", "w3")
 
   /*val pMap = TrieMap[String, ActorRef]()
   val wMap = TrieMap[String, ActorRef]()
@@ -36,7 +36,7 @@ object Server {
     admin.deleteTopic("log", r => {
       println(s"topic log deleted: ${r.succeeded()}")
 
-      admin.createTopic("log", 1, 1, (r: AsyncResult[Unit]) => {
+      admin.createTopic("log", coordinators.length, 1, (r: AsyncResult[Unit]) => {
         println(s"topic log created: ${r.succeeded()}")
 
         admin.close(_ => p.success(true))
@@ -78,11 +78,11 @@ object Server {
               settings = ClusterSingletonManagerSettings(system)), name = s)
         }
 
-       /* system.actorOf(
+        system.actorOf(
           ClusterSingletonManager.props(
-            singletonProps = Props(classOf[Aggregator]),
+            singletonProps = Props(classOf[Scheduler]),
             terminationMessage = PoisonPill,
-            settings = ClusterSingletonManagerSettings(system)), name = "aggregator")*/
+            settings = ClusterSingletonManagerSettings(system)), name = "scheduler")
 
       }
     }

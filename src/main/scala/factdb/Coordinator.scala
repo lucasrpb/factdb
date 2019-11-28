@@ -91,7 +91,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     var tasks = Seq.empty[Request]
     var keys = Seq.empty[String]
 
-    val it = batches.iterator()
+    /*val it = batches.iterator()
 
     while(it.hasNext){
       tasks = tasks :+ it.next()
@@ -105,9 +105,9 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
       } else {
         false
       }
-    }
+    }*/
 
-    /*while(!batches.isEmpty){
+    while(!batches.isEmpty){
       val r = batches.poll()
       val elapsed = now - r.tmp
 
@@ -119,7 +119,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
       } else {
         r.p.success(false)
       }
-    }*/
+    }
 
     if(tasks.isEmpty){
       task = scheduler.scheduleOnce(10 milliseconds)(job)
@@ -127,12 +127,11 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     }
 
     val txs = tasks.map(_.t)
-    val workers = txs.map(_.partitions).flatten.distinct.map(computeWorker(_)).distinct
-    val worker = scala.util.Random.shuffle(workers).head
+    val partitions = txs.map(_.partitions).flatten.distinct
 
-    val b = Batch(UUID.randomUUID.toString, txs, id, workers, worker)
+    val b = Batch(UUID.randomUUID.toString, txs, id, partitions)
 
-    save(b).flatMap(ok => logb(b).map(_ && ok)).map { ok =>
+    /*save(b).flatMap(ok => logb(b).map(_ && ok))*/logb(b).map { ok =>
       if(ok){
 
         //println(s"${Console.YELLOW_B}saved batch ${b.id}${Console.RESET}\n")
@@ -178,8 +177,8 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
   }
 
   def process(done: BatchDone): Unit = {
-    println(s"aborted ${done.aborted}")
-    println(s"committed ${done.committed}\n")
+    /*println(s"aborted ${done.aborted}")
+    println(s"committed ${done.committed}\n")*/
 
     done.aborted.foreach { t =>
       executing.get(t) match {
