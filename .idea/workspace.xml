@@ -3,17 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="dd86b2c3-f81f-43e7-99f4-cdd3cff34f6f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Scheduler.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Scheduler.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$anonfun$receive$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$anonfun$receive$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$typecreator1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$typecreator1$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$typecreator2$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$typecreator2$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/factdb_2.12-0.1.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/factdb_2.12-0.1.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/inputs" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/inputs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/definedTests/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/definedTests/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/testOnly/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/testOnly/$global/streams/out" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -147,7 +136,7 @@
       <workItem from="1573735146690" duration="6635000" />
       <workItem from="1573759332558" duration="799000" />
       <workItem from="1574339272378" duration="6437000" />
-      <workItem from="1574708231517" duration="24049000" />
+      <workItem from="1574708231517" duration="25895000" />
     </task>
     <task id="LOCAL-00001" summary="Singleton services tested.">
       <created>1572576165730</created>
@@ -226,7 +215,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574970631344</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Central scheduler execution model.">
+      <created>1574972251089</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1574972251089</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
