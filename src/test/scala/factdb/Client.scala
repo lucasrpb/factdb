@@ -19,7 +19,7 @@ class Client(val system: ActorSystem, val settings: ClusterClientSettings) {
 
   val id = UUID.randomUUID.toString
   val client = system.actorOf(ClusterClient.props(settings), s"client-$id")
-  implicit val timeout = new Timeout(300 seconds)
+  implicit val timeout = new Timeout(5 seconds)
   implicit val ec = system.dispatcher
 
   val rand = ThreadLocalRandom.current()
@@ -45,17 +45,8 @@ class Client(val system: ActorSystem, val settings: ClusterClientSettings) {
       val tx = Transaction(tid, dkeys, reads, writes.map(_._2).toSeq, partitions, c)
 
       (client ? ClusterClient.Send(s"/user/${c}/singleton", tx, localAffinity = false)).mapTo[Boolean]
-    }.map {
-      _ match {
-        case true =>
-          println(s"tx ${tid} succeed")
-          true
-        case false =>
-          println(s"tx ${tid} failed")
-          false
-      }
-    }.recover { case e =>
-      e.printStackTrace()
+    }.recover { case ex =>
+      ex.printStackTrace()
       false
     }
   }

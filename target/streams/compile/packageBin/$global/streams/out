@@ -16,6 +16,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\BatchFinished$BatchFinishedLens.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\package$Execute$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\package$Execute$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$Job.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$Job.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\package$$anon$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\package$$anon$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\package$.class[0m
@@ -44,8 +46,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\ReadResponse$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\package$SameMessage$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\package$SameMessage$.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$anonfun$job$9.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$$anonfun$job$9.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Command.class[0m
@@ -58,8 +58,6 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\BatchFinished$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\package$SameMessage.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\package$SameMessage.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$anonfun$logb$2.class[0m
-[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$$anonfun$logb$2.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$typecreator2$2.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$$typecreator2$2.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Scheduler$$typecreator1$1.class[0m
@@ -124,6 +122,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\Nack.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Scheduler.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Scheduler.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$anonfun$job$6.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$$anonfun$job$6.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$anonfun$receive$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Coordinator$$anonfun$receive$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Coordinator$$typecreator1$2.class[0m

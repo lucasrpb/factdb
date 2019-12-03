@@ -1,6 +1,7 @@
 package factdb
 
 import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.atomic.AtomicInteger
 
 import akka.actor.{ActorPath, ActorSystem}
 import akka.cluster.client.ClusterClientSettings
@@ -41,15 +42,21 @@ class MainSpec extends FlatSpec {
     val initialContacts = Set(
       ActorPath.fromString("akka.tcp://factdb@127.0.0.1:2551/system/receptionist"),
       ActorPath.fromString("akka.tcp://factdb@127.0.0.1:2552/system/receptionist"))
-    val settings = ClusterClientSettings(system).withInitialContacts(initialContacts)
+    val settings = ClusterClientSettings(system)
+      .withInitialContacts(initialContacts)
+      .withBufferSize(10000)
+      .withReconnectTimeout(None)
+      .withHeartbeat(2 seconds, 1000 seconds)
 
     implicit val ec = system.dispatcher
 
-    val n = 1000
+    val n = ITERATIONS
     var tasks = Seq.empty[Future[Boolean]]
 
     var clients = Seq.empty[Client]
     val nclients = 100
+
+    val counter = new AtomicInteger(0)
 
     for(i<-0 until nclients){
       clients = clients :+ new Client(system, settings)
@@ -57,7 +64,7 @@ class MainSpec extends FlatSpec {
 
     for(i<-0 until n){
       val client = clients(rand.nextInt(0, clients.length))
-      tasks = tasks :+ client.execute{ case (tid, reads) =>
+      tasks = tasks :+ client.execute { case (tid, reads) =>
 
         val keys = reads.keys
 
@@ -75,6 +82,22 @@ class MainSpec extends FlatSpec {
         }
 
         Map(k1 -> MVCCVersion(k1, b1, tid), k2 -> MVCCVersion(k2, b2, tid))
+      }.map { ok =>
+
+        val pos = counter.incrementAndGet()
+
+        if(pos == n){
+          println(s"${Console.RED_B}DONE!${Console.RESET}\n")
+        } else {
+          ok match {
+            case true =>
+              println(s"tx ${pos} succeed")
+            case false =>
+              println(s"tx ${pos} failed")
+          }
+        }
+
+        ok
       }
     }
 

@@ -11,6 +11,8 @@ package object factdb {
 
   val PARTITIONS = 1000
 
+  val ITERATIONS = 1000
+
   val accounts = TrieMap[String, Long]()
 
   def computePartition(k: String): String = {

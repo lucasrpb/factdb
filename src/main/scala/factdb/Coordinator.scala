@@ -2,14 +2,16 @@ package factdb
 
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedDeque
+import java.util.concurrent.atomic.{AtomicInteger, AtomicLong}
 
-import akka.actor.{Actor, ActorLogging, Cancellable}
+import akka.actor.{Actor, ActorLogging, ActorRef, Cancellable}
 import akka.cluster.Cluster
 import akka.cluster.client.ClusterClientReceptionist
 
 import scala.concurrent.duration._
 import factdb.protocol._
 import akka.pattern._
+import akka.remote.WireFormats.TimeUnit
 import com.datastax.driver.core.{HostDistance, PoolingOptions}
 import com.google.protobuf.any.Any
 import io.vertx.scala.core.Vertx
@@ -21,8 +23,9 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 
 class Coordinator(val id: String) extends Actor with ActorLogging {
 
-  implicit val ec: ExecutionContext = context.dispatcher
-  val scheduler = context.system.scheduler
+  implicit val executionContext = context.system.dispatchers.lookup("my-dispatcher")
+  //implicit val ec: ExecutionContext = context.dispatcher
+  //val scheduler = context.system.scheduler
 
   implicit val cluster = Cluster(context.system)
   ClusterClientReceptionist(context.system).registerService(self)
@@ -37,6 +40,8 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     .addContactPoint("127.0.0.1")
     .withPoolingOptions(poolingOptions)
     .build()
+
+  val scheduler = context.system.scheduler
 
   val session = ycluster.connect("s2")
 
@@ -63,26 +68,31 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
   def logb(b: Batch): Future[Boolean] = {
     val buf = Any.pack(b).toByteArray
     val now = System.currentTimeMillis()
+
     val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf)
 
-    producer.writeFuture(record).map { m =>
+    producer.sendFuture(record).map { m =>
       true
-    }.recover { case ex =>
-      ex.printStackTrace()
-      false
     }
   }
 
-  case class Request(t: Transaction, p: Promise[Boolean] = Promise[Boolean](), tmp: Long = System.currentTimeMillis())
+  case class Request(t: Transaction, sender: ActorRef, p: Promise[Boolean] = Promise[Boolean](), tmp: Long = System.currentTimeMillis())
 
-  val batches = new ConcurrentLinkedDeque[Request]()
-  val executing = TrieMap[String, Request]()
+  val transactions = new ConcurrentLinkedDeque[Request]()
+  val batches = TrieMap.empty[String, Batch]
+  val executing = TrieMap.empty[String, Request]
+
+  //val scheduler = new java.util.Timer()
+
+  class Job extends java.util.TimerTask {
+    override def run(): Unit = job
+  }
 
   var task: Cancellable = null
 
   def job(): Unit = synchronized {
 
-    if(batches.isEmpty){
+    if(transactions.isEmpty){
       task = scheduler.scheduleOnce(10 milliseconds)(job)
       return
     }
@@ -107,22 +117,14 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
       }
     }*/
 
-    while(!batches.isEmpty){
-      val r = batches.poll()
-      val elapsed = now - r.tmp
-
-      if(elapsed >= TIMEOUT){
-        r.p.success(false)
-      } else if(!r.t.keys.exists{keys.contains(_)}) {
-        keys = keys ++ r.t.keys
-        tasks = tasks :+ r
-      } else {
-        r.p.success(false)
-      }
+    while(!transactions.isEmpty){
+      val r = transactions.poll()
+      tasks = tasks :+ r
     }
 
     if(tasks.isEmpty){
       task = scheduler.scheduleOnce(10 milliseconds)(job)
+      //scheduler.schedule(new Job(), 10L)
       return
     }
 
@@ -131,10 +133,33 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
     val b = Batch(UUID.randomUUID.toString, txs, id, partitions)
 
-    /*save(b).flatMap(ok => logb(b).map(_ && ok))*/logb(b).map { ok =>
+    batches.put(b.id, b)
+    tasks.foreach { r =>
+      executing.put(r.t.id, r)
+    }
+
+    logb(b).recover { case ex =>
+      ex.printStackTrace()
+
+      batches.remove(b.id)
+
+      tasks.foreach { r =>
+        executing.remove(r.t.id)
+      }
+
+      tasks.foreach { r =>
+        r.p.success(false)
+      }
+    }.map { _ =>
+      task = scheduler.scheduleOnce(10 milliseconds)(job)
+    }
+
+    /*save(b).flatMap(ok => logb(b).map(_ && ok))*//*logb(b).map { ok =>
       if(ok){
 
-        //println(s"${Console.YELLOW_B}saved batch ${b.id}${Console.RESET}\n")
+        batches.put(b.id, b)
+
+        println(s"${Console.GREEN_B}saved batch ${b.id} at coordinator $id${Console.RESET}\n")
 
         tasks.foreach { r =>
           executing.put(r.t.id, r)
@@ -142,33 +167,39 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
       } else {
         tasks.foreach { r =>
           r.p.success(false)
+          //r.sender ! false
         }
       }
     }.recover { case ex =>
       tasks.foreach { r =>
         r.p.success(false)
+        //r.sender ! false
       }
 
       ex.printStackTrace()
     }.onComplete { _ =>
       task = scheduler.scheduleOnce(10 milliseconds)(job)
-    }
+      //scheduler.schedule(new Job(), 10L)
+    }*/
 
   }
 
   override def preStart(): Unit = {
+    //offset.set(0)
     println(s"STARTING COORDINATOR $id...\n")
     task = scheduler.scheduleOnce(10 milliseconds)(job)
+    //scheduler.schedule(new Job(), 10L)
   }
 
   override def postStop(): Unit = {
     if(task != null) task.cancel()
+    //scheduler.cancel()
     println(s"STOPPING COORDINATOR $id...\n")
   }
 
   def process(t: Transaction): Unit = {
-    val r = Request(t)
-    batches.offer(r)
+    val r = Request(t, sender)
+    transactions.offer(r)
 
     //sender ! true
     r.p.future.pipeTo(sender).recover { case e =>
@@ -180,21 +211,35 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     /*println(s"aborted ${done.aborted}")
     println(s"committed ${done.committed}\n")*/
 
+    val b = batches.remove(done.id)
+
+    if(b.isEmpty){
+      println(s"${Console.BLUE_B}WHOOOPS not found batch ${done.id} coordinator ${id} batches ${batches.map(_._2.id)}${Console.RESET}\n")
+    }
+
+    /*if(batches.isEmpty){
+      println(s"${Console.YELLOW_B}DONE AT COORDINATOR${Console.RESET}\n")
+    }*/
+
+    println(s"${Console.GREEN_B}PROCESSED BATCH ${done.id}${Console.RESET}\n")
+
     done.aborted.foreach { t =>
       executing.get(t) match {
-        case None =>
+        case None => println(s"${Console.BLUE_B}ABORTED NOT FOUND TX ${t} at coordinator ${id}!!!${Console.RESET}\n")
         case Some(r) =>
           executing.remove(t)
           r.p.success(false)
+         // r.sender ! false
       }
     }
 
     done.committed.foreach { t =>
       executing.get(t) match {
-        case None =>
+        case None => println(s"${Console.BLUE_B}NOT FOUND TX ${t} at coordinator ${id}!!!${Console.RESET}\n")
         case Some(r) =>
           executing.remove(t)
           r.p.success(true)
+          //r.sender ! true
       }
     }
 

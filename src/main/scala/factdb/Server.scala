@@ -4,6 +4,7 @@ import java.util.UUID
 
 import akka.actor.{ActorRef, ActorSystem, PoisonPill, Props}
 import akka.cluster.singleton.{ClusterSingletonManager, ClusterSingletonManagerSettings}
+import com.datastax.driver.core.{HostDistance, PoolingOptions}
 import com.typesafe.config.ConfigFactory
 import io.vertx.core.{AsyncResult, Handler}
 import io.vertx.scala.core.Vertx
@@ -18,8 +19,8 @@ object Server {
 
   val n = 3
 
-  val coordinators = Seq("c0", "c1", "c2", "c3")
-  val workers = Seq("w0", "w1", "w2", "w3")
+  val coordinators = Seq("c0", "c1", "c2")
+  val workers = Seq("w0", "w1", "w2")
 
   /*val pMap = TrieMap[String, ActorRef]()
   val wMap = TrieMap[String, ActorRef]()
@@ -29,7 +30,7 @@ object Server {
 
     //val port = args(0)
 
-    val admin = AdminUtils.create(Vertx.vertx(), "localhost:2181", false)
+    val admin = AdminUtils.create(Vertx.vertx(), "127.0.0.1:2181", false)
 
     val p = Promise[Boolean]()
 
@@ -40,10 +41,26 @@ object Server {
         println(s"topic log created: ${r.succeeded()}")
 
         admin.close(_ => p.success(true))
+
       })
     })
 
     Await.ready(p.future, Duration.Inf)
+
+    val poolingOptions = new PoolingOptions()
+      //.setConnectionsPerHost(HostDistance.LOCAL, 1, 200)
+      .setMaxRequestsPerConnection(HostDistance.LOCAL, 2000)
+    //.setNewConnectionThreshold(HostDistance.LOCAL, 2000)
+    //.setCoreConnectionsPerHost(HostDistance.LOCAL, 2000)
+
+    val ycluster = com.datastax.driver.core.Cluster.builder()
+      .addContactPoint("127.0.0.1")
+      .withPoolingOptions(poolingOptions)
+      .build()
+
+    val session = ycluster.connect("s2")
+
+    session.execute("truncate table bucetas;")
 
     def startup(ports: Seq[String]): Unit = {
       ports foreach { port =>
@@ -68,7 +85,7 @@ object Server {
               settings = ClusterSingletonManagerSettings(system)), name = s)
         }
 
-        for(i<-0 until workers.length){
+        /*for(i<-0 until workers.length){
           val s = workers(i)
 
           system.actorOf(
@@ -76,14 +93,13 @@ object Server {
               singletonProps = Props(classOf[Worker], s, i),
               terminationMessage = PoisonPill,
               settings = ClusterSingletonManagerSettings(system)), name = s)
-        }
+        }*/
 
         system.actorOf(
           ClusterSingletonManager.props(
             singletonProps = Props(classOf[Scheduler]),
             terminationMessage = PoisonPill,
             settings = ClusterSingletonManagerSettings(system)), name = "scheduler")
-
       }
     }
 

@@ -27,8 +27,10 @@ libraryDependencies ++= Seq(
   Library.vertx_codegen,
   Library.vertx_lang_scala,
   Library.vertx_hazelcast,
-  Library.vertx_kafka_client,
+  //Library.vertx_kafka_client,
   Library.vertx_codegen,
+
+  "io.vertx" % "vertx-kafka-client-scala_2.12" % "3.8.0",
 
   "org.scala-lang.modules" %% "scala-collection-compat" % "2.0.0",
   "org.scala-lang.modules" % "scala-java8-compat_2.12" % "0.9.0",

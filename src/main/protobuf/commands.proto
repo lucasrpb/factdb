@@ -62,9 +62,8 @@ message Epoch {
     option (scalapb.message).extends = "factdb.Command";
     option (scalapb.message).companion_extends = "factdb.Command";
 
-    string epoch = 1;
-    //repeated Batch batches = 2;
-    repeated Transaction txs = 2;
+    string id = 1;
+    repeated Batch batches = 2;
 }
 
 message BatchDone {

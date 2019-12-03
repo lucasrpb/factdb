@@ -5,13 +5,10 @@
 
 package factdb.protocol
 
-/** @param txs
-  *  repeated Batch batches = 2;
-  */
 @SerialVersionUID(0L)
 final case class Epoch(
-    epoch: _root_.scala.Predef.String = "",
-    txs: _root_.scala.Seq[factdb.protocol.Transaction] = _root_.scala.Seq.empty
+    id: _root_.scala.Predef.String = "",
+    batches: _root_.scala.Seq[factdb.protocol.Batch] = _root_.scala.Seq.empty
     ) extends scalapb.GeneratedMessage with scalapb.Message[Epoch] with scalapb.lenses.Updatable[Epoch] with factdb.Command {
     @transient
     private[this] var __serializedSizeCachedValue: _root_.scala.Int = 0
@@ -19,12 +16,12 @@ final case class Epoch(
       var __size = 0
       
       {
-        val __value = epoch
+        val __value = id
         if (__value != "") {
           __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(1, __value)
         }
       };
-      txs.foreach { __item =>
+      batches.foreach { __item =>
         val __value = __item
         __size += 1 + _root_.com.google.protobuf.CodedOutputStream.computeUInt32SizeNoTag(__value.serializedSize) + __value.serializedSize
       }
@@ -40,12 +37,12 @@ final case class Epoch(
     }
     def writeTo(`_output__`: _root_.com.google.protobuf.CodedOutputStream): _root_.scala.Unit = {
       {
-        val __v = epoch
+        val __v = id
         if (__v != "") {
           _output__.writeString(1, __v)
         }
       };
-      txs.foreach { __v =>
+      batches.foreach { __v =>
         val __m = __v
         _output__.writeTag(2, 2)
         _output__.writeUInt32NoTag(__m.serializedSize)
@@ -53,44 +50,44 @@ final case class Epoch(
       };
     }
     def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): factdb.protocol.Epoch = {
-      var __epoch = this.epoch
-      val __txs = (_root_.scala.collection.immutable.Vector.newBuilder[factdb.protocol.Transaction] ++= this.txs)
+      var __id = this.id
+      val __batches = (_root_.scala.collection.immutable.Vector.newBuilder[factdb.protocol.Batch] ++= this.batches)
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
         _tag__ match {
           case 0 => _done__ = true
           case 10 =>
-            __epoch = _input__.readString()
+            __id = _input__.readString()
           case 18 =>
-            __txs += _root_.scalapb.LiteParser.readMessage(_input__, factdb.protocol.Transaction.defaultInstance)
+            __batches += _root_.scalapb.LiteParser.readMessage(_input__, factdb.protocol.Batch.defaultInstance)
           case tag => _input__.skipField(tag)
         }
       }
       factdb.protocol.Epoch(
-          epoch = __epoch,
-          txs = __txs.result()
+          id = __id,
+          batches = __batches.result()
       )
     }
-    def withEpoch(__v: _root_.scala.Predef.String): Epoch = copy(epoch = __v)
-    def clearTxs = copy(txs = _root_.scala.Seq.empty)
-    def addTxs(__vs: factdb.protocol.Transaction*): Epoch = addAllTxs(__vs)
-    def addAllTxs(__vs: Iterable[factdb.protocol.Transaction]): Epoch = copy(txs = txs ++ __vs)
-    def withTxs(__v: _root_.scala.Seq[factdb.protocol.Transaction]): Epoch = copy(txs = __v)
+    def withId(__v: _root_.scala.Predef.String): Epoch = copy(id = __v)
+    def clearBatches = copy(batches = _root_.scala.Seq.empty)
+    def addBatches(__vs: factdb.protocol.Batch*): Epoch = addAllBatches(__vs)
+    def addAllBatches(__vs: Iterable[factdb.protocol.Batch]): Epoch = copy(batches = batches ++ __vs)
+    def withBatches(__v: _root_.scala.Seq[factdb.protocol.Batch]): Epoch = copy(batches = __v)
     def getFieldByNumber(__fieldNumber: _root_.scala.Int): _root_.scala.Any = {
       (__fieldNumber: @_root_.scala.unchecked) match {
         case 1 => {
-          val __t = epoch
+          val __t = id
           if (__t != "") __t else null
         }
-        case 2 => txs
+        case 2 => batches
       }
     }
     def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
       _root_.scala.Predef.require(__field.containingMessage eq companion.scalaDescriptor)
       (__field.number: @_root_.scala.unchecked) match {
-        case 1 => _root_.scalapb.descriptors.PString(epoch)
-        case 2 => _root_.scalapb.descriptors.PRepeated(txs.iterator.map(_.toPMessage).toVector)
+        case 1 => _root_.scalapb.descriptors.PString(id)
+        case 2 => _root_.scalapb.descriptors.PRepeated(batches.iterator.map(_.toPMessage).toVector)
       }
     }
     def toProtoString: _root_.scala.Predef.String = _root_.scalapb.TextFormat.printToUnicodeString(this)
@@ -104,7 +101,7 @@ object Epoch extends scalapb.GeneratedMessageCompanion[factdb.protocol.Epoch] wi
     val __fields = javaDescriptor.getFields
     factdb.protocol.Epoch(
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[_root_.scala.Predef.String],
-      __fieldsMap.getOrElse(__fields.get(1), Nil).asInstanceOf[_root_.scala.Seq[factdb.protocol.Transaction]]
+      __fieldsMap.getOrElse(__fields.get(1), Nil).asInstanceOf[_root_.scala.Seq[factdb.protocol.Batch]]
     )
   }
   implicit def messageReads: _root_.scalapb.descriptors.Reads[factdb.protocol.Epoch] = _root_.scalapb.descriptors.Reads{
@@ -112,7 +109,7 @@ object Epoch extends scalapb.GeneratedMessageCompanion[factdb.protocol.Epoch] wi
       _root_.scala.Predef.require(__fieldsMap.keys.forall(_.containingMessage == scalaDescriptor), "FieldDescriptor does not match message type.")
       factdb.protocol.Epoch(
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[_root_.scala.Predef.String]).getOrElse(""),
-        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).map(_.as[_root_.scala.Seq[factdb.protocol.Transaction]]).getOrElse(_root_.scala.Seq.empty)
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).map(_.as[_root_.scala.Seq[factdb.protocol.Batch]]).getOrElse(_root_.scala.Seq.empty)
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
@@ -121,7 +118,7 @@ object Epoch extends scalapb.GeneratedMessageCompanion[factdb.protocol.Epoch] wi
   def messageCompanionForFieldNumber(__number: _root_.scala.Int): _root_.scalapb.GeneratedMessageCompanion[_] = {
     var __out: _root_.scalapb.GeneratedMessageCompanion[_] = null
     (__number: @_root_.scala.unchecked) match {
-      case 2 => __out = factdb.protocol.Transaction
+      case 2 => __out = factdb.protocol.Batch
     }
     __out
   }
@@ -130,16 +127,16 @@ object Epoch extends scalapb.GeneratedMessageCompanion[factdb.protocol.Epoch] wi
   lazy val defaultInstance = factdb.protocol.Epoch(
   )
   implicit class EpochLens[UpperPB](_l: _root_.scalapb.lenses.Lens[UpperPB, factdb.protocol.Epoch]) extends _root_.scalapb.lenses.ObjectLens[UpperPB, factdb.protocol.Epoch](_l) {
-    def epoch: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Predef.String] = field(_.epoch)((c_, f_) => c_.copy(epoch = f_))
-    def txs: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Seq[factdb.protocol.Transaction]] = field(_.txs)((c_, f_) => c_.copy(txs = f_))
+    def id: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Predef.String] = field(_.id)((c_, f_) => c_.copy(id = f_))
+    def batches: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Seq[factdb.protocol.Batch]] = field(_.batches)((c_, f_) => c_.copy(batches = f_))
   }
-  final val EPOCH_FIELD_NUMBER = 1
-  final val TXS_FIELD_NUMBER = 2
+  final val ID_FIELD_NUMBER = 1
+  final val BATCHES_FIELD_NUMBER = 2
   def of(
-    epoch: _root_.scala.Predef.String,
-    txs: _root_.scala.Seq[factdb.protocol.Transaction]
+    id: _root_.scala.Predef.String,
+    batches: _root_.scala.Seq[factdb.protocol.Batch]
   ): _root_.factdb.protocol.Epoch = _root_.factdb.protocol.Epoch(
-    epoch,
-    txs
+    id,
+    batches
   )
 }
