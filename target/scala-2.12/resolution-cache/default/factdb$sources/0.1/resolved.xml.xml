@@ -4,7 +4,7 @@
 		module="factdb$sources"
 		revision="0.1"
 		status="integration"
-		publication="20191202231629"
+		publication="20191203164703"
 	/>
 	<configurations>
 		<conf name="compile" visibility="public" description=""/>

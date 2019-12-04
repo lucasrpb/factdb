@@ -69,7 +69,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     val buf = Any.pack(b).toByteArray
     val now = System.currentTimeMillis()
 
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf)
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf)
 
     producer.sendFuture(record).map { m =>
       true

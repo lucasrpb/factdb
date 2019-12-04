@@ -80,7 +80,7 @@ class Scheduler() extends Actor with ActorLogging {
     wMap.put(w, proxy)
   }
 
-  val cMap = TrieMap[String, ActorRef]()
+  val cMap = TrieMap.empty[String, ActorRef]
 
   Server.coordinators.foreach { c =>
 
@@ -93,32 +93,41 @@ class Scheduler() extends Actor with ActorLogging {
     cMap.put(c, proxy)
   }
 
-  val n = new AtomicInteger(0)
+  val offset = new AtomicInteger(0)
+  val positions = TrieMap.empty[Int, Long]
 
-  def handler(evts: KafkaConsumerRecords[String, Array[Byte]]): Unit = {
+  (0 until Server.coordinators.length).map { i =>
+    positions.put(i, 0L)
+  }
+
+  def seek(): Unit = {
+    val p = offset.getAndIncrement() % Server.coordinators.length
+    val pos = positions(p)
+
+    positions.update(p, pos + 1L)
+
+    val tp = new io.vertx.kafka.client.common.TopicPartition().setTopic("log").setPartition(p)
+    val partition = TopicPartition(tp)
+
+    consumer.seek(partition, pos)
+    consumer.commit()
+  }
+
+  def handler(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
     consumer.pause()
 
-    val batches = (0 until evts.size).map { i =>
-      val rec = evts.recordAt(i)
-      Any.parseFrom(rec.value()).unpack(Batch)
-    }
+    val e = Any.parseFrom(evt.value()).unpack(Epoch)
 
-    batches.foreach { b =>
-      n.addAndGet(b.txs.length)
+    e.batches.foreach { b =>
       cMap(b.coordinator) ! BatchDone(b.id, Seq.empty[String], b.txs.map(_.id))
     }
 
-    if(n.get() == ITERATIONS){
-      n.set(0)
-      println(s"${Console.RED_B}DONE AT SCHEDULER${Console.RESET}\n")
-    }
-
-    consumer.commit()
+    seek()
     consumer.resume()
   }
 
-  consumer.handler(_ => {})
-  consumer.batchHandler(handler)
+  consumer.handler(handler)
+  seek()
 
   override def receive: Receive = {
     case _ =>
