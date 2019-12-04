@@ -65,13 +65,17 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     session.executeAsync(INSERT_BATCH.bind.setString(0, b.id)).map(_.wasApplied())
   }
 
+  var offset = new AtomicInteger(0)
+
   def logb(b: Batch): Future[Boolean] = {
     val buf = Any.pack(b).toByteArray
     val now = System.currentTimeMillis()
 
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf)
+    val p = offset.get() % Server.coordinators.length
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf, now, p)
 
     producer.sendFuture(record).map { m =>
+      offset.incrementAndGet()
       true
     }
   }
