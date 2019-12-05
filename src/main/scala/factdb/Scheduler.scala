@@ -60,7 +60,7 @@ class Scheduler() extends Actor with ActorLogging {
   // use consumer for interacting with Apache Kafka
   var consumer = KafkaConsumer.create[String, Array[Byte]](vertx, config)
 
-  consumer.subscribeFuture("batches").onComplete {
+  consumer.subscribeFuture("log").onComplete {
     case Success(result) => {
       println(s"scheduler subscribed!")
     }
@@ -94,13 +94,25 @@ class Scheduler() extends Actor with ActorLogging {
   }
 
   val offset = new AtomicInteger(0)
+  val positions = TrieMap.empty[Int, Long]
+
+  for(i<-0 until Server.coordinators.length){
+    positions.put(i, 0L)
+  }
 
   def seek(): Unit = {
     val p = offset.getAndIncrement() % Server.coordinators.length
+    //val p = offset.getAndIncrement()
+    val pos = positions(p)
+
     val tp = new io.vertx.kafka.client.common.TopicPartition().setTopic("log").setPartition(p)
     val partition = TopicPartition(tp)
 
-    consumer.seekToEnd(partition)
+    //offset.compareAndSet(Server.coordinators.length, 0)
+    positions.update(p, pos + 1L)
+
+    //consumer.seek(partition, pos)
+    consumer.seek(partition, pos)
     consumer.commit()
   }
 
@@ -108,6 +120,8 @@ class Scheduler() extends Actor with ActorLogging {
     consumer.pause()
 
     val b = Any.parseFrom(evt.value()).unpack(Batch)
+
+    println(s"${Console.RED_B}batch ${b.id} coordinator: ${b.coordinator}${Console.RESET}\n")
 
     cMap(b.coordinator) ! BatchDone(b.id, Seq.empty[String], b.txs.map(_.id))
 

@@ -67,12 +67,15 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
   var offset = new AtomicInteger(0)
 
-  def logb(b: Batch): Future[Boolean] = {
+  def logb(b: Batch): Future[Boolean] = synchronized {
     val buf = Any.pack(b).toByteArray
     val now = System.currentTimeMillis()
 
+    //val p = offset.getAndIncrement()
+    //offset.compareAndSet(Server.coordinators.length, 0)
+
     val p = offset.get() % Server.coordinators.length
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf, now, p)
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf, now, p)
 
     producer.sendFuture(record).map { m =>
       offset.incrementAndGet()
@@ -211,7 +214,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     }
   }
 
-  def process(done: BatchDone): Unit = {
+  def process(done: BatchDone): Unit = synchronized {
     /*println(s"aborted ${done.aborted}")
     println(s"committed ${done.committed}\n")*/
 
@@ -225,11 +228,14 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
       println(s"${Console.YELLOW_B}DONE AT COORDINATOR${Console.RESET}\n")
     }*/
 
-    println(s"${Console.GREEN_B}PROCESSED BATCH ${done.id}${Console.RESET}\n")
+    if(b.isDefined)
+    {
+      println(s"${Console.GREEN_B}PROCESSED BATCH ${done.id}${Console.RESET}\n")
+    }
 
     done.aborted.foreach { t =>
       executing.get(t) match {
-        case None => println(s"${Console.BLUE_B}ABORTED NOT FOUND TX ${t} at coordinator ${id}!!!${Console.RESET}\n")
+        case None => //println(s"${Console.BLUE_B}ABORTED NOT FOUND TX ${t} at coordinator ${id}!!!${Console.RESET}\n")
         case Some(r) =>
           executing.remove(t)
           r.p.success(false)
@@ -239,7 +245,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
     done.committed.foreach { t =>
       executing.get(t) match {
-        case None => println(s"${Console.BLUE_B}NOT FOUND TX ${t} at coordinator ${id}!!!${Console.RESET}\n")
+        case None => //println(s"${Console.BLUE_B}NOT FOUND TX ${t} at coordinator ${id}!!!${Console.RESET}\n")
         case Some(r) =>
           executing.remove(t)
           r.p.success(true)

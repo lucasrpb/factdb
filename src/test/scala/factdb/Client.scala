@@ -19,7 +19,7 @@ class Client(val system: ActorSystem, val settings: ClusterClientSettings) {
 
   val id = UUID.randomUUID.toString
   val client = system.actorOf(ClusterClient.props(settings), s"client-$id")
-  implicit val timeout = new Timeout(5 seconds)
+  implicit val timeout = new Timeout(10 seconds)
   implicit val ec = system.dispatcher
 
   val rand = ThreadLocalRandom.current()

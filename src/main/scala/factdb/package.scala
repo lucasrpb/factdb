@@ -1,3 +1,5 @@
+import java.util.concurrent.{ConcurrentHashMap, ConcurrentLinkedDeque}
+
 import akka.cluster.ddata.ReplicatedData
 import com.google.common.util.concurrent.{FutureCallback, Futures, ListenableFuture}
 import factdb.protocol._
@@ -7,11 +9,13 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 
 package object factdb {
 
+  val EVENTS = new ConcurrentLinkedDeque[String]()
+
   val TIMEOUT = 1000L
 
   val PARTITIONS = 1000
 
-  val ITERATIONS = 1000
+  val ITERATIONS = 100
 
   val accounts = TrieMap[String, Long]()
 

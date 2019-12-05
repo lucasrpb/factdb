@@ -34,11 +34,11 @@ object Server {
 
     val p = Promise[Boolean]()
 
-    admin.deleteTopic("batches", r => {
-      println(s"topic batches deleted: ${r.succeeded()}")
+    admin.deleteTopic("log", r => {
+      println(s"topic log deleted: ${r.succeeded()}")
 
-      admin.createTopic("batches", coordinators.length, 1, (r: AsyncResult[Unit]) => {
-        println(s"topic batches created: ${r.succeeded()}")
+      admin.createTopic("log", coordinators.length, 1, (r: AsyncResult[Unit]) => {
+        println(s"topic log created: ${r.succeeded()}")
 
         admin.close(_ => p.success(true))
 
