@@ -74,11 +74,11 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     //val p = offset.getAndIncrement()
     //offset.compareAndSet(Server.coordinators.length, 0)
 
-    val p = offset.get() % Server.coordinators.length
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf, now, p)
+    val p = offset.getAndIncrement() % Server.coordinators.length
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf, now, p)
 
     producer.sendFuture(record).map { m =>
-      offset.incrementAndGet()
+      println(s"batch ${b.id} offset ${m.getOffset} partition ${m.getPartition}\n")
       true
     }
   }

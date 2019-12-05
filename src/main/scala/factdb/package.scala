@@ -15,9 +15,9 @@ package object factdb {
 
   val PARTITIONS = 1000
 
-  val ITERATIONS = 100
+  val ITERATIONS = 1000
 
-  val accounts = TrieMap[String, Long]()
+  val accounts = TrieMap.empty[String, Long]
 
   def computePartition(k: String): String = {
     (scala.util.hashing.byteswap32(k.##).abs % PARTITIONS).toString
