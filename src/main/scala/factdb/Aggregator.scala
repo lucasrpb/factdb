@@ -106,8 +106,10 @@ class Aggregator() extends Actor with ActorLogging {
     val buf = Any.pack(e).toByteArray
     val now = System.currentTimeMillis()
 
-    val p = offset.get() % Server.coordinators.length
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", e.id, buf, now, p)
+    //val p = offset.get() % EPOCH_TOPIC_PARTITIONS
+    //val record = KafkaProducerRecord.create[String, Array[Byte]]("log", e.id, buf, now, p)
+
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", e.id, buf)
 
     producer.sendFuture(record).map { m =>
       true

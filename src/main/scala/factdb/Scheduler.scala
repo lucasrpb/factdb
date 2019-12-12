@@ -21,7 +21,9 @@ import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class Scheduler() extends Actor with ActorLogging {
+class Scheduler(id: String) extends Actor with ActorLogging {
+
+  val PARTITION = "batches"
 
   implicit val executionContext = context.system.dispatchers.lookup("my-dispatcher")
 
@@ -50,7 +52,7 @@ class Scheduler() extends Actor with ActorLogging {
   config += (ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
   config += (ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringDeserializer")
   config += (ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArrayDeserializer")
-  config += (ConsumerConfig.GROUP_ID_CONFIG -> s"scheduler")
+  config += (ConsumerConfig.GROUP_ID_CONFIG -> s"scheduler-$id")
   config += (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "latest")
   config += (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> "false")
 
@@ -60,9 +62,9 @@ class Scheduler() extends Actor with ActorLogging {
   // use consumer for interacting with Apache Kafka
   var consumer = KafkaConsumer.create[String, Array[Byte]](vertx, config)
 
-  consumer.subscribeFuture("batches").onComplete {
+  consumer.subscribeFuture(PARTITION).onComplete {
     case Success(result) => {
-      println(s"scheduler subscribed!")
+      println(s"scheduler-$id subscribed!")
     }
     case Failure(cause) => cause.printStackTrace()
   }
@@ -96,16 +98,16 @@ class Scheduler() extends Actor with ActorLogging {
   val offset = new AtomicInteger(0)
   val positions = TrieMap.empty[Int, Long]
 
-  for(i<-0 until Server.coordinators.length){
+  for(i<-0 until EPOCH_TOPIC_PARTITIONS){
     positions.put(i, 0L)
   }
 
   def seek(): Unit = {
-    val p = offset.getAndIncrement() % Server.coordinators.length
+    val p = offset.getAndIncrement() % EPOCH_TOPIC_PARTITIONS
     //val p = offset.getAndIncrement()
     val pos = positions(p)
 
-    val tp = new io.vertx.kafka.client.common.TopicPartition().setTopic("log").setPartition(p)
+    val tp = new io.vertx.kafka.client.common.TopicPartition().setTopic(PARTITION).setPartition(p)
     val partition = TopicPartition(tp)
 
     //offset.compareAndSet(Server.coordinators.length, 0)
@@ -113,22 +115,23 @@ class Scheduler() extends Actor with ActorLogging {
 
     consumer.seek(partition, pos)
     //consumer.seekToEnd(partition)
-    consumer.commit()
+    //consumer.commit()
   }
-
+  
   def handler(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
     consumer.pause()
 
-    /*val b = Any.parseFrom(evt.value()).unpack(Epoch)
+   /* val e = Any.parseFrom(evt.value()).unpack(Epoch)
 
-    b.batches.foreach { b =>
+    e.batches.foreach { b =>
       println(s"${Console.RED_B}batch ${b.id} coordinator: ${b.coordinator}${Console.RESET}\n")
       cMap(b.coordinator) ! BatchDone(b.id, Seq.empty[String], b.txs.map(_.id))
     }*/
 
     val b = Any.parseFrom(evt.value()).unpack(Batch)
 
-    println(s"${Console.RED_B}batch ${b.id} coordinator: ${b.coordinator} offset: ${evt.offset()} partition ${evt.partition()}${Console.RESET}\n")
+    println(s"${Console.RED_B}scheduler-$id position ${offset.get()}: batch ${b.id} coordinator: ${b.coordinator} offset: ${evt.offset()} partition ${evt.partition()}${Console.RESET}\n")
+
     cMap(b.coordinator) ! BatchDone(b.id, Seq.empty[String], b.txs.map(_.id))
 
     seek()
