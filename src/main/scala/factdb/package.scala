@@ -15,7 +15,7 @@ package object factdb {
 
   val PARTITIONS = 1000
 
-  val ITERATIONS = 3000
+  val ITERATIONS = 1000
 
   val EPOCH_TOPIC_PARTITIONS = 3
 
@@ -45,12 +45,8 @@ package object factdb {
     p.future
   }
 
-  case class SameMessage(msg: String) extends ReplicatedData {
-    override type T = SameMessage
-    override def merge(that: SameMessage): SameMessage = that
-  }
-
-  case class Execute(txs: Seq[Transaction]) extends Command
+  case class Collect(id: String, epoch: String) extends Command
+  case class CollectResponse(id: String, epoch: String, b: Option[Batch]) extends Command
 
   /*case class Executed(epoch: Long, partitions: Seq[String]) extends ReplicatedData {
     override type T = Executed

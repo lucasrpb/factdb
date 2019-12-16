@@ -43,7 +43,7 @@ object Server {
         admin.createTopic("log", EPOCH_TOPIC_PARTITIONS, 1, (r: AsyncResult[Unit]) => {
           println(s"topic log created: ${r.succeeded()}")
 
-          admin.createTopic("batches", EPOCH_TOPIC_PARTITIONS, 1, (r: AsyncResult[Unit]) => {
+          admin.createTopic("batches", coordinators.length, 1, (r: AsyncResult[Unit]) => {
             println(s"topic batches created: ${r.succeeded()}")
 
             admin.close(_ => p.success(true))
@@ -95,7 +95,7 @@ object Server {
               settings = ClusterSingletonManagerSettings(system)), name = s)
         }
 
-        for(i<-0 until workers.length){
+        /*for(i<-0 until workers.length){
           val s = workers(i)
 
           system.actorOf(
@@ -103,13 +103,13 @@ object Server {
               singletonProps = Props(classOf[Worker], s, i),
               terminationMessage = PoisonPill,
               settings = ClusterSingletonManagerSettings(system)), name = s)
-        }
+        }*/
 
-        /*system.actorOf(
+        system.actorOf(
           ClusterSingletonManager.props(
             singletonProps = Props(classOf[Aggregator]),
             terminationMessage = PoisonPill,
-            settings = ClusterSingletonManagerSettings(system)), name = "aggregator")*/
+            settings = ClusterSingletonManagerSettings(system)), name = "aggregator")
 
         for(i<-0 until 1){
           system.actorOf(

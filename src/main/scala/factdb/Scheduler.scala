@@ -23,7 +23,7 @@ import scala.util.{Failure, Success}
 
 class Scheduler(id: String) extends Actor with ActorLogging {
 
-  val PARTITION = "batches"
+  val PARTITION = "log"
 
   implicit val executionContext = context.system.dispatchers.lookup("my-dispatcher")
 
@@ -115,24 +115,24 @@ class Scheduler(id: String) extends Actor with ActorLogging {
 
     consumer.seek(partition, pos)
     //consumer.seekToEnd(partition)
-    //consumer.commit()
+    consumer.commit()
   }
   
   def handler(evt: KafkaConsumerRecord[String, Array[Byte]]): Unit = {
     consumer.pause()
 
-   /* val e = Any.parseFrom(evt.value()).unpack(Epoch)
+    val e = Any.parseFrom(evt.value()).unpack(Epoch)
 
     e.batches.foreach { b =>
       println(s"${Console.RED_B}batch ${b.id} coordinator: ${b.coordinator}${Console.RESET}\n")
       cMap(b.coordinator) ! BatchDone(b.id, Seq.empty[String], b.txs.map(_.id))
-    }*/
+    }
 
-    val b = Any.parseFrom(evt.value()).unpack(Batch)
+    /*val b = Any.parseFrom(evt.value()).unpack(Batch)
 
     println(s"${Console.RED_B}scheduler-$id position ${offset.get()}: batch ${b.id} coordinator: ${b.coordinator} offset: ${evt.offset()} partition ${evt.partition()}${Console.RESET}\n")
 
-    cMap(b.coordinator) ! BatchDone(b.id, Seq.empty[String], b.txs.map(_.id))
+    cMap(b.coordinator) ! BatchDone(b.id, Seq.empty[String], b.txs.map(_.id))*/
 
     seek()
     consumer.resume()
