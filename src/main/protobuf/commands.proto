@@ -56,6 +56,8 @@ message Batch {
     repeated Transaction txs = 2;
     string coordinator = 3;
     repeated string partitions = 4;
+    repeated string workers = 5;
+    string worker = 6;
 }
 
 message Epoch {

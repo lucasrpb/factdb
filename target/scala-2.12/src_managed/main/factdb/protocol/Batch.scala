@@ -10,7 +10,9 @@ final case class Batch(
     id: _root_.scala.Predef.String = "",
     txs: _root_.scala.Seq[factdb.protocol.Transaction] = _root_.scala.Seq.empty,
     coordinator: _root_.scala.Predef.String = "",
-    partitions: _root_.scala.Seq[_root_.scala.Predef.String] = _root_.scala.Seq.empty
+    partitions: _root_.scala.Seq[_root_.scala.Predef.String] = _root_.scala.Seq.empty,
+    workers: _root_.scala.Seq[_root_.scala.Predef.String] = _root_.scala.Seq.empty,
+    worker: _root_.scala.Predef.String = ""
     ) extends scalapb.GeneratedMessage with scalapb.Message[Batch] with scalapb.lenses.Updatable[Batch] with factdb.Command {
     @transient
     private[this] var __serializedSizeCachedValue: _root_.scala.Int = 0
@@ -38,6 +40,17 @@ final case class Batch(
         val __value = __item
         __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(4, __value)
       }
+      workers.foreach { __item =>
+        val __value = __item
+        __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(5, __value)
+      }
+      
+      {
+        val __value = worker
+        if (__value != "") {
+          __size += _root_.com.google.protobuf.CodedOutputStream.computeStringSize(6, __value)
+        }
+      };
       __size
     }
     final override def serializedSize: _root_.scala.Int = {
@@ -71,12 +84,24 @@ final case class Batch(
         val __m = __v
         _output__.writeString(4, __m)
       };
+      workers.foreach { __v =>
+        val __m = __v
+        _output__.writeString(5, __m)
+      };
+      {
+        val __v = worker
+        if (__v != "") {
+          _output__.writeString(6, __v)
+        }
+      };
     }
     def mergeFrom(`_input__`: _root_.com.google.protobuf.CodedInputStream): factdb.protocol.Batch = {
       var __id = this.id
       val __txs = (_root_.scala.collection.immutable.Vector.newBuilder[factdb.protocol.Transaction] ++= this.txs)
       var __coordinator = this.coordinator
       val __partitions = (_root_.scala.collection.immutable.Vector.newBuilder[_root_.scala.Predef.String] ++= this.partitions)
+      val __workers = (_root_.scala.collection.immutable.Vector.newBuilder[_root_.scala.Predef.String] ++= this.workers)
+      var __worker = this.worker
       var _done__ = false
       while (!_done__) {
         val _tag__ = _input__.readTag()
@@ -90,6 +115,10 @@ final case class Batch(
             __coordinator = _input__.readString()
           case 34 =>
             __partitions += _input__.readString()
+          case 42 =>
+            __workers += _input__.readString()
+          case 50 =>
+            __worker = _input__.readString()
           case tag => _input__.skipField(tag)
         }
       }
@@ -97,7 +126,9 @@ final case class Batch(
           id = __id,
           txs = __txs.result(),
           coordinator = __coordinator,
-          partitions = __partitions.result()
+          partitions = __partitions.result(),
+          workers = __workers.result(),
+          worker = __worker
       )
     }
     def withId(__v: _root_.scala.Predef.String): Batch = copy(id = __v)
@@ -110,6 +141,11 @@ final case class Batch(
     def addPartitions(__vs: _root_.scala.Predef.String*): Batch = addAllPartitions(__vs)
     def addAllPartitions(__vs: Iterable[_root_.scala.Predef.String]): Batch = copy(partitions = partitions ++ __vs)
     def withPartitions(__v: _root_.scala.Seq[_root_.scala.Predef.String]): Batch = copy(partitions = __v)
+    def clearWorkers = copy(workers = _root_.scala.Seq.empty)
+    def addWorkers(__vs: _root_.scala.Predef.String*): Batch = addAllWorkers(__vs)
+    def addAllWorkers(__vs: Iterable[_root_.scala.Predef.String]): Batch = copy(workers = workers ++ __vs)
+    def withWorkers(__v: _root_.scala.Seq[_root_.scala.Predef.String]): Batch = copy(workers = __v)
+    def withWorker(__v: _root_.scala.Predef.String): Batch = copy(worker = __v)
     def getFieldByNumber(__fieldNumber: _root_.scala.Int): _root_.scala.Any = {
       (__fieldNumber: @_root_.scala.unchecked) match {
         case 1 => {
@@ -122,6 +158,11 @@ final case class Batch(
           if (__t != "") __t else null
         }
         case 4 => partitions
+        case 5 => workers
+        case 6 => {
+          val __t = worker
+          if (__t != "") __t else null
+        }
       }
     }
     def getField(__field: _root_.scalapb.descriptors.FieldDescriptor): _root_.scalapb.descriptors.PValue = {
@@ -131,6 +172,8 @@ final case class Batch(
         case 2 => _root_.scalapb.descriptors.PRepeated(txs.iterator.map(_.toPMessage).toVector)
         case 3 => _root_.scalapb.descriptors.PString(coordinator)
         case 4 => _root_.scalapb.descriptors.PRepeated(partitions.iterator.map(_root_.scalapb.descriptors.PString).toVector)
+        case 5 => _root_.scalapb.descriptors.PRepeated(workers.iterator.map(_root_.scalapb.descriptors.PString).toVector)
+        case 6 => _root_.scalapb.descriptors.PString(worker)
       }
     }
     def toProtoString: _root_.scala.Predef.String = _root_.scalapb.TextFormat.printToUnicodeString(this)
@@ -146,7 +189,9 @@ object Batch extends scalapb.GeneratedMessageCompanion[factdb.protocol.Batch] wi
       __fieldsMap.getOrElse(__fields.get(0), "").asInstanceOf[_root_.scala.Predef.String],
       __fieldsMap.getOrElse(__fields.get(1), Nil).asInstanceOf[_root_.scala.Seq[factdb.protocol.Transaction]],
       __fieldsMap.getOrElse(__fields.get(2), "").asInstanceOf[_root_.scala.Predef.String],
-      __fieldsMap.getOrElse(__fields.get(3), Nil).asInstanceOf[_root_.scala.Seq[_root_.scala.Predef.String]]
+      __fieldsMap.getOrElse(__fields.get(3), Nil).asInstanceOf[_root_.scala.Seq[_root_.scala.Predef.String]],
+      __fieldsMap.getOrElse(__fields.get(4), Nil).asInstanceOf[_root_.scala.Seq[_root_.scala.Predef.String]],
+      __fieldsMap.getOrElse(__fields.get(5), "").asInstanceOf[_root_.scala.Predef.String]
     )
   }
   implicit def messageReads: _root_.scalapb.descriptors.Reads[factdb.protocol.Batch] = _root_.scalapb.descriptors.Reads{
@@ -156,7 +201,9 @@ object Batch extends scalapb.GeneratedMessageCompanion[factdb.protocol.Batch] wi
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(1).get).map(_.as[_root_.scala.Predef.String]).getOrElse(""),
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(2).get).map(_.as[_root_.scala.Seq[factdb.protocol.Transaction]]).getOrElse(_root_.scala.Seq.empty),
         __fieldsMap.get(scalaDescriptor.findFieldByNumber(3).get).map(_.as[_root_.scala.Predef.String]).getOrElse(""),
-        __fieldsMap.get(scalaDescriptor.findFieldByNumber(4).get).map(_.as[_root_.scala.Seq[_root_.scala.Predef.String]]).getOrElse(_root_.scala.Seq.empty)
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(4).get).map(_.as[_root_.scala.Seq[_root_.scala.Predef.String]]).getOrElse(_root_.scala.Seq.empty),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(5).get).map(_.as[_root_.scala.Seq[_root_.scala.Predef.String]]).getOrElse(_root_.scala.Seq.empty),
+        __fieldsMap.get(scalaDescriptor.findFieldByNumber(6).get).map(_.as[_root_.scala.Predef.String]).getOrElse("")
       )
     case _ => throw new RuntimeException("Expected PMessage")
   }
@@ -178,20 +225,28 @@ object Batch extends scalapb.GeneratedMessageCompanion[factdb.protocol.Batch] wi
     def txs: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Seq[factdb.protocol.Transaction]] = field(_.txs)((c_, f_) => c_.copy(txs = f_))
     def coordinator: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Predef.String] = field(_.coordinator)((c_, f_) => c_.copy(coordinator = f_))
     def partitions: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Seq[_root_.scala.Predef.String]] = field(_.partitions)((c_, f_) => c_.copy(partitions = f_))
+    def workers: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Seq[_root_.scala.Predef.String]] = field(_.workers)((c_, f_) => c_.copy(workers = f_))
+    def worker: _root_.scalapb.lenses.Lens[UpperPB, _root_.scala.Predef.String] = field(_.worker)((c_, f_) => c_.copy(worker = f_))
   }
   final val ID_FIELD_NUMBER = 1
   final val TXS_FIELD_NUMBER = 2
   final val COORDINATOR_FIELD_NUMBER = 3
   final val PARTITIONS_FIELD_NUMBER = 4
+  final val WORKERS_FIELD_NUMBER = 5
+  final val WORKER_FIELD_NUMBER = 6
   def of(
     id: _root_.scala.Predef.String,
     txs: _root_.scala.Seq[factdb.protocol.Transaction],
     coordinator: _root_.scala.Predef.String,
-    partitions: _root_.scala.Seq[_root_.scala.Predef.String]
+    partitions: _root_.scala.Seq[_root_.scala.Predef.String],
+    workers: _root_.scala.Seq[_root_.scala.Predef.String],
+    worker: _root_.scala.Predef.String
   ): _root_.factdb.protocol.Batch = _root_.factdb.protocol.Batch(
     id,
     txs,
     coordinator,
-    partitions
+    partitions,
+    workers,
+    worker
   )
 }

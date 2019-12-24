@@ -46,7 +46,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
   val session = ycluster.connect("s2")
 
   val READ = session.prepare("select * from data where key=?;")
-  val INSERT_BATCH = session.prepare("insert into batches(id, completed, votes) values(?,false,0);")
+  val INSERT_BATCH = session.prepare("insert into batches(id, completed) values(?,false);")
 
   val config = scala.collection.mutable.Map[String, String]()
   config += (ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
@@ -71,7 +71,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     val buf = Any.pack(b).toByteArray
     val now = System.currentTimeMillis()
 
-    val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf)
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf)
 
     /*val p = offset.getAndIncrement() % EPOCH_TOPIC_PARTITIONS
     val record = KafkaProducerRecord.create[String, Array[Byte]]("batches", b.id, buf, now, p)*/
@@ -107,7 +107,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     var tasks = Seq.empty[Request]
     var keys = Seq.empty[String]
 
-    /*val it = batches.iterator()
+    val it = transactions.iterator
 
     while(it.hasNext){
       tasks = tasks :+ it.next()
@@ -116,17 +116,17 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
     tasks = tasks.filter { r =>
       if(!r.t.keys.exists{keys.contains(_)}) {
         keys = keys ++ r.t.keys
-        batches.remove(r)
+        transactions.remove(r)
         true
       } else {
         false
       }
-    }*/
+    }
 
-    while(!transactions.isEmpty){
+    /*while(!transactions.isEmpty){
       val r = transactions.poll()
       tasks = tasks :+ r
-    }
+    }*/
 
     if(tasks.isEmpty){
       task = scheduler.scheduleOnce(10 milliseconds)(job)
@@ -136,15 +136,17 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
     val txs = tasks.map(_.t)
     val partitions = txs.map(_.partitions).flatten.distinct
+    val workers = partitions.map(computeWorker(_)).distinct.sorted
 
-    val b = Batch(UUID.randomUUID.toString, txs, id, partitions)
+    val b = Batch(UUID.randomUUID.toString, txs, id, partitions, workers, workers.head)
 
     batches.put(b.id, b)
+
     tasks.foreach { r =>
       executing.put(r.t.id, r)
     }
 
-    logb(b).recover { case ex =>
+    save(b).flatMap(ok => logb(b).map(_ && ok)).recover { case ex =>
       ex.printStackTrace()
 
       batches.remove(b.id)
@@ -221,6 +223,7 @@ class Coordinator(val id: String) extends Actor with ActorLogging {
 
     if(b.isEmpty){
       println(s"${Console.BLUE_B}WHOOOPS not found batch ${done.id} coordinator ${id} batches ${batches.map(_._2.id)}${Console.RESET}\n")
+      //System.exit(1)
     }
 
     /*if(batches.isEmpty){

@@ -2,29 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dd86b2c3-f81f-43e7-99f4-cdd3cff34f6f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/scala/factdb/Worker.scala" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$job$11.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server$$anonfun$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$anonfun$receive$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$anonfun$write$3.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$anonfun$write$7.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator1$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator2$1.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/streams/$global/ssExtractDependencies/$global/streams/out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/streams/test/testOnly/isModule=false name=factdb.InsertSpec/test/out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-reports/TEST-factdb.InsertSpec.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-reports/factdb.InsertSpec.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/factdb.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/factdb.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$20d9f6d37ce118350d75$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$20d9f6d37ce118350d75.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$20d9f6d37ce118350d75.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3e346e538085c72cedf2$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3e346e538085c72cedf2.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3e346e538085c72cedf2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3fdb665c6eb139341673$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3fdb665c6eb139341673.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3fdb665c6eb139341673.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$f024079c908d2f6986d9$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$f024079c908d2f6986d9.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$f024079c908d2f6986d9.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$f74973e62c8a5caf51d2$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$f74973e62c8a5caf51d2.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$f74973e62c8a5caf51d2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$fdcb0bc81a73e365496f$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$fdcb0bc81a73e365496f.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$fdcb0bc81a73e365496f.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$ff6f74768f5179b93ecf$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$ff6f74768f5179b93ecf.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$ff6f74768f5179b93ecf.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/project/target/scala-2.12/sbt-1.0/resolution-cache/default/factdb-build/scala_2.12/sbt_1.0/0.1.0-SNAPSHOT/resolved.xml.properties" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/scala-2.12/sbt-1.0/resolution-cache/default/factdb-build/scala_2.12/sbt_1.0/0.1.0-SNAPSHOT/resolved.xml.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project/target/scala-2.12/sbt-1.0/resolution-cache/default/factdb-build/scala_2.12/sbt_1.0/0.1.0-SNAPSHOT/resolved.xml.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/scala-2.12/sbt-1.0/resolution-cache/default/factdb-build/scala_2.12/sbt_1.0/0.1.0-SNAPSHOT/resolved.xml.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project/target/scala-2.12/sbt-1.0/resolution-cache/reports/default-factdb-build-compile-internal.xml" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/scala-2.12/sbt-1.0/resolution-cache/reports/default-factdb-build-compile-internal.xml" afterDir="false" />
@@ -41,32 +33,33 @@
       <change beforePath="$PROJECT_DIR$/project/target/streams/$global/ivyConfiguration/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/$global/ivyConfiguration/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project/target/streams/$global/update/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/$global/update/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/project/target/streams/$global/update/$global/streams/update_cache_2.12/output" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/$global/update/$global/streams/update_cache_2.12/output" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/protobuf/commands.proto" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/protobuf/commands.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Aggregator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Aggregator.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Coordinator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Coordinator.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Scheduler.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Scheduler.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Server.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/Server.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/Worker.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/factdb/package.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/factdb/package.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$anonfun$receive$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$anonfun$receive$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator1$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator2$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator3$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator3$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator4$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator$$typecreator4$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Aggregator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator1$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator1$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator2$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$typecreator2$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$job$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$process$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$process$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$receive$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator$$anonfun$receive$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Coordinator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$anonfun$receive$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$anonfun$receive$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$typecreator1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$typecreator1$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$typecreator2$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler$$typecreator2$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Scheduler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$anonfun$receive$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$anonfun$write$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$anonfun$write$7.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator1$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker$$typecreator2$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Worker.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$Execute$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$Execute.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$SameMessage$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package$SameMessage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/package.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch$.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch$BatchLens.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch$BatchLens.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/Batch.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/CommandsProto$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/factdb/protocol/CommandsProto$.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/factdb_2.12-0.1.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/factdb_2.12-0.1.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/default/factdb$sources/0.1/resolved.xml.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/default/factdb$sources/0.1/resolved.xml.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/default/factdb$sources/0.1/resolved.xml.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/default/factdb$sources/0.1/resolved.xml.xml" afterDir="false" />
@@ -98,22 +91,22 @@
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/default-factdb_2.12-test.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/default-factdb_2.12-test.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/Batch.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/Batch.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/CommandsProto.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/CommandsProto.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/Epoch.scala" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/src_managed/main/factdb/protocol/Epoch.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/$global/update/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/$global/update/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/$global/update/$global/streams/update_cache_2.12/output" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/$global/update/$global/streams/update_cache_2.12/output" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/$global/updateClassifiers/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/$global/updateClassifiers/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/compile/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compile/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/copy-resources" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/copy-resources" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/inputs" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/inputs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/protocGenerate/$global/streams/protobuf_2.12/in-cache" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/protocGenerate/$global/streams/protobuf_2.12/in-cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/compile/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/compile/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/compileIncSetup/$global/streams/inc_compile_2.12.zip" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/compileIncSetup/$global/streams/inc_compile_2.12.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/compileIncremental/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/compileIncremental/$global/streams/export" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/test/compileIncremental/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/compileIncremental/$global/streams/out" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/test/definedTests/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/definedTests/$global/streams/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/test/test/$global/streams/succeeded_tests" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/test/$global/streams/succeeded_tests" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/test/testOnly/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/testOnly/$global/streams/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/test/testOnly/isModule=false name=factdb.MainSpec/test/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/testOnly/isModule=false name=factdb.MainSpec/test/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-reports/TEST-factdb.MainSpec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-reports/TEST-factdb.MainSpec.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-reports/factdb.MainSpec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-reports/factdb.MainSpec.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -213,7 +206,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="6290871666176" />
+        <entry key="$PROJECT_DIR$" value="6291642372745" />
         <entry key="$PROJECT_DIR$/build.sbt" value="1870036824" />
         <entry key="$PROJECT_DIR$/project/Dependencies.scala" value="1940254020" />
         <entry key="$PROJECT_DIR$/project/build.properties" value="1396028727" />
@@ -262,7 +255,14 @@
       <workItem from="1576175021248" duration="4461000" />
       <workItem from="1576351380148" duration="5025000" />
       <workItem from="1576423132203" duration="2097000" />
-      <workItem from="1576519629608" duration="1448000" />
+      <workItem from="1576519629608" duration="2070000" />
+      <workItem from="1576790619111" duration="112000" />
+      <workItem from="1576797377192" duration="9941000" />
+      <workItem from="1576845503750" duration="4142000" />
+      <workItem from="1576875823472" duration="13852000" />
+      <workItem from="1576950622097" duration="7868000" />
+      <workItem from="1577126051417" duration="12232000" />
+      <workItem from="1577185342263" duration="6542000" />
     </task>
     <task id="LOCAL-00001" summary="Singleton services tested.">
       <created>1572576165730</created>
@@ -390,7 +390,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576521161110</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Batch aggregator that aggregates cluster batches into epochs and partition them among partitions of a topic.">
+      <created>1576521182772</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1576521182772</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

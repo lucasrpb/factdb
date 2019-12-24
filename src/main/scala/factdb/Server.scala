@@ -11,7 +11,7 @@ import io.vertx.scala.core.Vertx
 import io.vertx.scala.kafka.admin.AdminUtils
 
 import scala.collection.concurrent.TrieMap
-import scala.concurrent.{Await, Promise}
+import scala.concurrent.{Await, Future, Promise}
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -21,6 +21,8 @@ object Server {
 
   val coordinators = Seq("c0", "c1", "c2")
   val workers = Seq("w0", "w1", "w2")
+
+  val LOG_TOPICS = Seq("l0", "l1", "l2")
 
   /*val pMap = TrieMap[String, ActorRef]()
   val wMap = TrieMap[String, ActorRef]()
@@ -32,30 +34,76 @@ object Server {
 
     val admin = AdminUtils.create(Vertx.vertx(), "127.0.0.1:2181", false)
 
-    val p = Promise[Boolean]()
+    val topics = Seq("log" -> 1, "batches" -> coordinators.length).toMap
 
-    admin.deleteTopic("log", r => {
-      println(s"topic log deleted: ${r.succeeded()}")
+    def createPartition(t: String, n: Int, rf: Int): Future[Boolean] = {
+      val p = Promise[Boolean]()
 
-      admin.deleteTopic("batches", r => {
-        println(s"topic batches deleted: ${r.succeeded()}")
+      admin.topicExists(t, (event: AsyncResult[Boolean]) => {
+        println(s"$t exists: ${event.result()}")
 
-        admin.createTopic("log", EPOCH_TOPIC_PARTITIONS, 1, (r: AsyncResult[Unit]) => {
-          println(s"topic log created: ${r.succeeded()}")
+        if(event.failed()){
+          p.failure(event.cause())
+        } else if(event.result()){
+          admin.deleteTopic(t, (event: AsyncResult[Unit])=> {
+            if(event.failed()){
+              p.failure(event.cause())
+            } else {
 
-          admin.createTopic("batches", coordinators.length, 1, (r: AsyncResult[Unit]) => {
-            println(s"topic batches created: ${r.succeeded()}")
+              println(s"$t deleted!")
 
-            admin.close(_ => p.success(true))
+              admin.createTopic(t, n, rf, (event: AsyncResult[Unit]) => {
 
+                if(event.failed()){
+                  p.failure(event.cause())
+                } else {
+                  println(s"$t created!")
+                  p.success(true)
+                }
+              })
+
+            }
+          })
+        } else {
+
+          admin.createTopic(t, n, rf, (event: AsyncResult[Unit]) => {
+
+            if(event.failed()){
+              p.failure(event.cause())
+            } else {
+              println(s"$t created!")
+              p.success(true)
+            }
           })
 
-        })
-
+        }
       })
-    })
 
-    Await.ready(p.future, Duration.Inf)
+      p.future
+    }
+
+    /*val p = Future.sequence(topics.map{case (t, _) => admin.topicExistsFuture(t).map(t -> _)})
+      .flatMap { checks =>
+        Future.sequence(checks.filter(_._2).map(_._1).map{admin.deleteTopicFuture(_)})
+    }.flatMap { _ =>
+      Future.sequence(topics.map{case (t, n) => admin.createTopicFuture(t, n, 1)})
+    }.flatMap { _ =>
+      println(s"topics ${topics.map(_._1)} created!\n")
+      admin.closeFuture().map(_ => true)
+    }.recover { case ex =>
+      ex.printStackTrace()
+      false
+    }*/
+
+    val f = Future.sequence(topics.map{case (t, n) => createPartition(t, n, 1)})
+      .map(_ => true)
+        .recover { case ex =>
+          ex.printStackTrace()
+          System.exit(1)
+          false
+        }
+
+    Await.ready(f, Duration.Inf)
 
     val poolingOptions = new PoolingOptions()
       //.setConnectionsPerHost(HostDistance.LOCAL, 1, 200)
@@ -70,7 +118,7 @@ object Server {
 
     val session = ycluster.connect("s2")
 
-    session.execute("truncate table bucetas;")
+    session.execute("truncate table epochs;")
 
     def startup(ports: Seq[String]): Unit = {
       ports foreach { port =>
@@ -95,29 +143,30 @@ object Server {
               settings = ClusterSingletonManagerSettings(system)), name = s)
         }
 
-        /*for(i<-0 until workers.length){
+        /*system.actorOf(
+          ClusterSingletonManager.props(
+            singletonProps = Props(classOf[Aggregator]),
+            terminationMessage = PoisonPill,
+            settings = ClusterSingletonManagerSettings(system)), name = "aggregator")*/
+
+        for(i<-0 until workers.length){
           val s = workers(i)
 
           system.actorOf(
             ClusterSingletonManager.props(
-              singletonProps = Props(classOf[Worker], s, i),
+              singletonProps = Props(classOf[Worker], s),
               terminationMessage = PoisonPill,
               settings = ClusterSingletonManagerSettings(system)), name = s)
-        }*/
+        }
 
-        system.actorOf(
-          ClusterSingletonManager.props(
-            singletonProps = Props(classOf[Aggregator]),
-            terminationMessage = PoisonPill,
-            settings = ClusterSingletonManagerSettings(system)), name = "aggregator")
-
-        for(i<-0 until 1){
+        /*for(i<-0 until 1){
           system.actorOf(
             ClusterSingletonManager.props(
               singletonProps = Props(classOf[Scheduler], i.toString),
               terminationMessage = PoisonPill,
               settings = ClusterSingletonManagerSettings(system)), name = s"scheduler-$i")
-        }
+        }*/
+
       }
     }
 

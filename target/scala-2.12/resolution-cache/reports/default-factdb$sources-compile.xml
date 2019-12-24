@@ -7,7 +7,7 @@
 		revision="0.1"
 		conf="compile"
 		confs="compile, runtime, test, provided, optional, protobuf, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
-		date="20191212181447"/>
+		date="20191221161949"/>
 	<dependencies>
 		<module organisation="io.vertx" name="vertx-kafka-client-scala_2.12">
 			<revision name="3.8.0" status="release" pubdate="20190716070141" resolver="sbt-chain" artresolver="sbt-chain" homepage="" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="78">
