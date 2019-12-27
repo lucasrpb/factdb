@@ -70,6 +70,8 @@
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\ReadRequest$ReadRequestLens.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol\BatchResponse$.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\protocol\BatchResponse$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	factdb\Worker$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Worker$$anon$1.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\Server.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	  D:\Users\lucas\IdeaProjects\factdb\target\scala-2.12\classes\factdb\Server.class[0m
 [0m[[0m[0mdebug[0m] [0m[0m	factdb\protocol[0m

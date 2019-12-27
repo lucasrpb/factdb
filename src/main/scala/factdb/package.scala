@@ -15,7 +15,7 @@ package object factdb {
 
   val PARTITIONS = 1000
 
-  val ITERATIONS = 1000
+  val ITERATIONS = 3000
 
   val EPOCH_TOPIC_PARTITIONS = 3
 

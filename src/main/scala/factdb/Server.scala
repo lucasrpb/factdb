@@ -34,7 +34,7 @@ object Server {
 
     val admin = AdminUtils.create(Vertx.vertx(), "127.0.0.1:2181", false)
 
-    val topics = Seq("log" -> 1, "batches" -> coordinators.length).toMap
+    val topics = Seq("log" -> EPOCH_TOPIC_PARTITIONS, "batches" -> coordinators.length).toMap
 
     def createPartition(t: String, n: Int, rf: Int): Future[Boolean] = {
       val p = Promise[Boolean]()
@@ -82,19 +82,6 @@ object Server {
       p.future
     }
 
-    /*val p = Future.sequence(topics.map{case (t, _) => admin.topicExistsFuture(t).map(t -> _)})
-      .flatMap { checks =>
-        Future.sequence(checks.filter(_._2).map(_._1).map{admin.deleteTopicFuture(_)})
-    }.flatMap { _ =>
-      Future.sequence(topics.map{case (t, n) => admin.createTopicFuture(t, n, 1)})
-    }.flatMap { _ =>
-      println(s"topics ${topics.map(_._1)} created!\n")
-      admin.closeFuture().map(_ => true)
-    }.recover { case ex =>
-      ex.printStackTrace()
-      false
-    }*/
-
     val f = Future.sequence(topics.map{case (t, n) => createPartition(t, n, 1)})
       .map(_ => true)
         .recover { case ex =>
@@ -104,6 +91,22 @@ object Server {
         }
 
     Await.ready(f, Duration.Inf)
+
+    /*val f = Future.sequence(topics.map{case (t, _) => admin.topicExistsFuture(t).map(t -> _)})
+      .flatMap { checks =>
+        Future.sequence(checks.filter(_._2).map(_._1).map{admin.deleteTopicFuture(_)})
+    }.flatMap { _ =>
+      println(s"topics ${topics.map(_._1)} deleted!\n")
+      Future.sequence(topics.map{case (t, n) => admin.createTopicFuture(t, n, 1)})
+    }.flatMap { _ =>
+      println(s"topics ${topics.map(_._1)} created!\n")
+      admin.closeFuture().map(_ => true)
+    }.recover { case ex =>
+      ex.printStackTrace()
+      false
+    }
+
+    Await.ready(f, Duration.Inf)*/
 
     val poolingOptions = new PoolingOptions()
       //.setConnectionsPerHost(HostDistance.LOCAL, 1, 200)
@@ -143,11 +146,11 @@ object Server {
               settings = ClusterSingletonManagerSettings(system)), name = s)
         }
 
-        /*system.actorOf(
+        system.actorOf(
           ClusterSingletonManager.props(
             singletonProps = Props(classOf[Aggregator]),
             terminationMessage = PoisonPill,
-            settings = ClusterSingletonManagerSettings(system)), name = "aggregator")*/
+            settings = ClusterSingletonManagerSettings(system)), name = "aggregator")
 
         for(i<-0 until workers.length){
           val s = workers(i)

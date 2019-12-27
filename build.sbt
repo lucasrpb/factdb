@@ -32,6 +32,8 @@ libraryDependencies ++= Seq(
 
   "io.vertx" % "vertx-kafka-client-scala_2.12" % "3.8.0",
 
+  //"org.apache.kafka" %% "kafka" % "2.4.0",
+
   "org.scala-lang.modules" %% "scala-collection-compat" % "2.0.0",
   "org.scala-lang.modules" % "scala-java8-compat_2.12" % "0.9.0",
   //"com.yugabyte" % "cassandra-driver-core" % "3.2.0-yb-19"

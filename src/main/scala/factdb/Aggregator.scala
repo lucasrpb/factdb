@@ -1,7 +1,8 @@
 package factdb
 
 import java.nio.ByteBuffer
-import java.util.UUID
+import java.time.Duration
+import java.util.{Arrays, Collections, Properties, UUID}
 import java.util.concurrent.atomic.AtomicInteger
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
@@ -18,6 +19,9 @@ import io.vertx.scala.kafka.client.producer.{KafkaProducer, KafkaProducerRecord}
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 
+import org.apache.kafka.clients.producer._
+import org.apache.kafka.clients.consumer._
+
 import scala.collection.concurrent.TrieMap
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Success}
@@ -33,8 +37,8 @@ class Aggregator() extends Actor with ActorLogging {
 
   val poolingOptions = new PoolingOptions()
     //.setConnectionsPerHost(HostDistance.LOCAL, 1, 200)
-    .setMaxRequestsPerConnection(HostDistance.LOCAL, 32768)
-  //.setNewConnectionThreshold(HostDistance.LOCAL, 2000)
+    //.setMaxRequestsPerConnection(HostDistance.LOCAL, 32768)
+  .setNewConnectionThreshold(HostDistance.LOCAL, 2000)
   //.setCoreConnectionsPerHost(HostDistance.LOCAL, 2000)
 
   val ycluster = com.datastax.driver.core.Cluster.builder()
@@ -47,6 +51,7 @@ class Aggregator() extends Actor with ActorLogging {
   val INSERT_EPOCH = session.prepare("INSERT INTO epochs(id, bin) VALUES(?,?);")
 
   val vertx = Vertx.vertx()
+
   val cconfig = scala.collection.mutable.Map[String, String]()
 
   cconfig += (ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
@@ -56,18 +61,9 @@ class Aggregator() extends Actor with ActorLogging {
   cconfig += (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "latest")
   cconfig += (ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG -> "false")
 
-  //config += (ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG -> "104857600")
-  //config += (ConsumerConfig.MAX_POLL_RECORDS_CONFIG -> "5")
+  val consumer = KafkaConsumer.create[String, Array[Byte]](vertx, cconfig)
 
-  // use consumer for interacting with Apache Kafka
-  var consumer = KafkaConsumer.create[String, Array[Byte]](vertx, cconfig)
-
-  consumer.subscribeFuture("batches").onComplete {
-    case Success(result) => {
-      println(s"aggregator subscribed!")
-    }
-    case Failure(cause) => cause.printStackTrace()
-  }
+  consumer.subscribe("batches")
 
   val pconfig = scala.collection.mutable.Map[String, String]()
   pconfig += (ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "localhost:9092")
@@ -76,7 +72,6 @@ class Aggregator() extends Actor with ActorLogging {
   pconfig += (ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringSerializer")
   pconfig += (ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.ByteArraySerializer")
   pconfig += (ProducerConfig.ACKS_CONFIG -> "1")
-  pconfig += (ProducerConfig.BATCH_SIZE_CONFIG -> "100")
 
   val wMap = TrieMap[String, ActorRef]()
 
@@ -109,7 +104,7 @@ class Aggregator() extends Actor with ActorLogging {
 
   var offset = new AtomicInteger(0)
 
-  def save(e: Batch): Future[Boolean] = {
+  def save(e: Epoch): Future[Boolean] = {
     val buf = Any.pack(e).toByteArray
     val bytes = ByteBuffer.wrap(buf)
 
@@ -119,29 +114,13 @@ class Aggregator() extends Actor with ActorLogging {
   }
 
   def loge(e: Epoch): Future[Boolean] = {
-    //val buf = Any.pack(e).toByteArray
+    val buf = Any.pack(e).toByteArray
     val now = System.currentTimeMillis()
 
-    //val p = offset.getAndIncrement() % EPOCH_TOPIC_PARTITIONS
-    //val record = KafkaProducerRecord.create[String, Array[Byte]]("log", e.id, buf, now, p)
+    val p = offset.get() % EPOCH_TOPIC_PARTITIONS
+    val record = KafkaProducerRecord.create[String, Array[Byte]]("log", e.id, buf, now, p)
 
-    //val record = KafkaProducerRecord.create[String, Array[Byte]]("log", e.id, buf)
-
-    /*producer.sendFuture(record).map { m =>
-      true
-    }*/
-
-    e.batches.foreach { b =>
-      val buf = Any.pack(b).toByteArray
-      val record = KafkaProducerRecord.create[String, Array[Byte]]("log", b.id, buf)
-      producer.send(record)
-    }
-
-    val p = Promise[Boolean]()
-
-    producer.flush(_ => p.success(true))
-
-    p.future
+    producer.sendFuture(record).map(_ => true)
   }
 
   def handler(evts: KafkaConsumerRecords[String, Array[Byte]]): Unit = {
@@ -154,9 +133,16 @@ class Aggregator() extends Actor with ActorLogging {
 
     val e = Epoch(UUID.randomUUID.toString, batches)
 
-    loge(e).onComplete { case _ =>
-      consumer.commit()
-      consumer.resume()
+    loge(e).onComplete {
+
+      case Success(_) =>
+        offset.incrementAndGet()
+        consumer.commit()
+        consumer.resume()
+
+      case Failure(ex) =>
+        ex.printStackTrace()
+        System.exit(1)
     }
   }
 
