@@ -265,6 +265,7 @@ class Worker(val id: String) extends Actor with ActorLogging {
 
         consumer.commit()
 
+
         offset.incrementAndGet()
         positions.put(p, pos + 1L)
 
